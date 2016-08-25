@@ -4,8 +4,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface AppDelegate : UIResponder<UIApplicationDelegate>
+@interface OverlayScrollView : UITableView
 
-@property(strong, nonatomic) UIWindow* window;
+- (instancetype)initWithEventForwardingTarget:(UIResponder*)target;
 
 @end

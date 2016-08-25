@@ -1,8 +1,3 @@
-# scroll_overlay
+# iOS Scroll Overlay
 
-A new flutter project.
-
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
+Overlays a native iOS scroll view over the Flutter view. The scroll view displays items of a random color and opacity. The scroll view forwards all touch events it receives to the underlying Flutter view. This way, the scroll behavior of Flutter and native controls can be compared.

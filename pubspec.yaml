@@ -2,4 +2,4 @@ name: scroll_overlay
 description: A new flutter project.
 dependencies:
   flutter:
-    path: ../../../../Volumes/Mojo/flutter/packages/flutter
+    path: ../flutter/packages/flutter
