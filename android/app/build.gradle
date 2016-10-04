@@ -1,0 +1,23 @@
+apply plugin: 'com.android.application'
+
+task copyFlx(type: Copy) {
+    from flutterFlx
+    into "${project.buildDir}/flx"
+}
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
+
+    preBuild.dependsOn copyFlx
+
+    sourceSets {
+        main {
+            assets.srcDir "${project.buildDir}/flx"
+        }
+    }
+}
+
+dependencies {
+    compile files(flutterJar)
+}
