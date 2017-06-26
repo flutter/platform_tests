@@ -1,5 +1,9 @@
 name: scroll_overlay
-description: A new flutter project.
+description: A Flutter app that overlays a native scroll view over the Flutter view.
+
 dependencies:
   flutter:
-    path: ../flutter/packages/flutter
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

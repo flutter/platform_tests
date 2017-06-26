@@ -23,19 +23,19 @@
     self.dataSource = self;
     self.allowsSelection = NO;
     [self addGestureRecognizer:[[PassiveGestureRecognizer alloc]
-                                   initWithEventForwardingTarget:target]];
+                                initWithEventForwardingTarget:target]];
   }
 
   return self;
 }
 
 - (NSInteger)tableView:(UITableView*)tableView
-    numberOfRowsInSection:(NSInteger)section {
+ numberOfRowsInSection:(NSInteger)section {
   return 1000;
 }
 
 - (CGFloat)tableView:(UITableView*)tableView
-    heightForRowAtIndexPath:(NSIndexPath*)indexPath {
+heightForRowAtIndexPath:(NSIndexPath*)indexPath {
   return 40.0;
 }
 
@@ -44,7 +44,7 @@
   static NSString* const kReuseIdentifier = @"OverlayScrollViewItemKey";
 
   UITableViewCell* cell =
-      [tableView dequeueReusableCellWithIdentifier:kReuseIdentifier];
+  [tableView dequeueReusableCellWithIdentifier:kReuseIdentifier];
 
   if (cell == NULL) {
     cell = [[UITableViewCell alloc] init];

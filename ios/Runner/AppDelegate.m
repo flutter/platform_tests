@@ -3,14 +3,13 @@
 // found in the LICENSE file.
 
 #include "AppDelegate.h"
-
-#import <Flutter/Flutter.h>
+#include "GeneratedPluginRegistrant.h"
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication*)application
-    didFinishLaunchingWithOptions:(NSDictionary*)launchOptions {
-  return YES;
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [GeneratedPluginRegistrant registerWithRegistry:self];
+  return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 @end

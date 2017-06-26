@@ -41,8 +41,8 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer*)gestureRecognizer
-    shouldRecognizeSimultaneouslyWithGestureRecognizer:
-        (UIGestureRecognizer*)otherGestureRecognizer {
+shouldRecognizeSimultaneouslyWithGestureRecognizer:
+(UIGestureRecognizer*)otherGestureRecognizer {
   return YES;
 }
 
