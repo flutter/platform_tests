@@ -24,28 +24,34 @@ class FlutterDemo extends StatefulWidget {
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Flutter Demo'),
-      ),
-      body: new Center(
-        child: new Text(
-            'Button tapped $_counter time${ _counter == 1 ? '' : 's' }.'),
-      ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
+      body: new ListView.builder(
+        itemCount: 1000,
+        itemExtent: 40.0,
+        itemBuilder: (BuildContext context, int index) {
+          return new Container(
+            decoration: new BoxDecoration(
+              border: new Border.all(
+                color: const Color(0xFF666666),
+                width: 0.0,
+              ),
+            ),
+            child: new Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                new Padding(
+                  padding: const EdgeInsets.only(left: 100.0),
+                  child: new Text(
+                    'Flutter $index',
+                    style: const TextStyle(fontSize: 16.0),
+                  ),
+                ),
+              ],
+            )
+          );
+        },
       ),
     );
   }
