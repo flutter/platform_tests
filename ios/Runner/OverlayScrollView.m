@@ -13,7 +13,7 @@
 
 @implementation OverlayScrollView
 
-- (instancetype)initWithEventForwardingTarget:(UIResponder*)target {
+- (instancetype)initWithFlutterViewController:(FlutterViewController *)controller {
   self = [super init];
 
   if (self) {
@@ -23,7 +23,10 @@
     self.dataSource = self;
     self.allowsSelection = NO;
     [self addGestureRecognizer:[[PassiveGestureRecognizer alloc]
-                                initWithEventForwardingTarget:target]];
+                                initWithFlutterViewController:controller
+                                withVelocityGetter:^{
+                                  return [[self panGestureRecognizer] velocityInView:self].y;
+                                }]];
   }
 
   return self;

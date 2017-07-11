@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#import <UIKit/UIKit.h>
+#import <Flutter/Flutter.h>
 
 @interface OverlayScrollView : UITableView
 
-- (instancetype)initWithEventForwardingTarget:(UIResponder*)target;
+- (instancetype)initWithFlutterViewController:(FlutterViewController*)controller;
 
 @end

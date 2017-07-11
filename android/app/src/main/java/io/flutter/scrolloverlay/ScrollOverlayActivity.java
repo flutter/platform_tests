@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.view.FlutterMain;
 import io.flutter.view.FlutterView;
 
 public class ScrollOverlayActivity extends Activity {
     private static final String TAG = "ScrollOverlayActivity";
+    private static final String VELOCITY_CHANNEL = "scroll_overlay.flutter.io/velocity";
 
     private static final int[] OVERLAY_COLORS = new int[]{0x40ff0000, 0x4000ff00, 0x400000ff};
 
@@ -40,6 +42,20 @@ public class ScrollOverlayActivity extends Activity {
                 return false;
             };
         });
+
+        new EventChannel(flutterView, VELOCITY_CHANNEL).setStreamHandler(
+            new EventChannel.StreamHandler() {
+                @Override
+                public void onListen(Object arguments, EventChannel.EventSink events) {
+                    // Implement.
+                }
+
+                @Override
+                public void onCancel(Object arguments) {
+                    // Implement.
+                }
+            }
+        );
     }
 
     @Override

@@ -16,8 +16,7 @@
 - (void)viewDidLoad {
   [super viewDidLoad];
 
-  self.overlay =
-      [[OverlayScrollView alloc] initWithEventForwardingTarget:self.view];
+  self.overlay = [[OverlayScrollView alloc] initWithFlutterViewController:self];
 
   [self.view addSubview:self.overlay];
 }
