@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.view.FlutterMain;
@@ -106,12 +109,25 @@ public class ScrollOverlayActivity extends Activity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = new View(ScrollOverlayActivity.this);
-                convertView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, 100));
+                TextView textView = new TextView(ScrollOverlayActivity.this);
+                textView.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        40,
+                        getResources().getDisplayMetrics())));
+                textView.setTextColor(0xFF000000);
+                textView.setGravity(Gravity.CENTER_VERTICAL);
+                textView.setTextSize(15);
+                textView.setPadding((int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    6,
+                    getResources().getDisplayMetrics()), 0, 0, 0);
+                convertView = textView;
             }
             int color = OVERLAY_COLORS[position % OVERLAY_COLORS.length];
             convertView.setBackground(new ColorDrawable(color));
+            ((TextView) convertView).setText("Android " + position);
             return convertView;
         }
     }
