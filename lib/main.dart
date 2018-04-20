@@ -42,7 +42,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
           setState(() => flutterFlingVelocity = velocity);
       });
     });
-    _platformVelocityEventChannel.receiveBroadcastStream().listen((double velocity) {
+    _platformVelocityEventChannel.receiveBroadcastStream().listen((dynamic velocity) {
       if (velocity != platformFlingVelocity)
         setState(() => platformFlingVelocity = velocity);
     });
