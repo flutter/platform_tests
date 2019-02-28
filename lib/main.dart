@@ -11,12 +11,12 @@ const EventChannel _platformVelocityEventChannel =
 
 void main() {
   runApp(
-    new MaterialApp(
+    MaterialApp(
       title: 'Flutter Demo',
-      theme: new ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new FlutterDemo(),
+      home: FlutterDemo(),
     ),
   );
 }
@@ -25,7 +25,7 @@ class FlutterDemo extends StatefulWidget {
   FlutterDemo({Key key}) : super(key: key);
 
   @override
-  _FlutterDemoState createState() => new _FlutterDemoState();
+  _FlutterDemoState createState() => _FlutterDemoState();
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
@@ -36,7 +36,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
   @override
   void initState() {
     super.initState();
-    instrumentingPhysics = new InstrumentingScrollPhysics(velocityListener: (double velocity) {
+    instrumentingPhysics = InstrumentingScrollPhysics(velocityListener: (double velocity) {
       SchedulerBinding.instance.addPostFrameCallback((Duration timestamp) {
         if (velocity != flutterFlingVelocity)
           setState(() => flutterFlingVelocity = velocity);
@@ -50,27 +50,27 @@ class _FlutterDemoState extends State<FlutterDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Stack(
+    return Scaffold(
+      body: Stack(
         children: <Widget>[
-          new ListView.builder(
+          ListView.builder(
             physics: instrumentingPhysics,
             itemCount: 1000,
             itemExtent: 40.0,
             itemBuilder: (BuildContext context, int index) {
-              return new Container(
-                decoration: new BoxDecoration(
-                  border: new Border.all(
+              return Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
                     color: const Color(0xFF666666),
                     width: 0.0,
                   ),
                 ),
-                child: new Row(
+                child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    new Padding(
+                    Padding(
                       padding: const EdgeInsets.only(left: 100.0),
-                      child: new Text(
+                      child: Text(
                         'Flutter $index',
                         style: const TextStyle(fontSize: 16.0),
                       ),
@@ -80,16 +80,16 @@ class _FlutterDemoState extends State<FlutterDemo> {
               );
             },
           ),
-          new Align(
+          Align(
             alignment: FractionalOffset.centerRight,
             child: DefaultTextStyle.merge(
               style: const TextStyle (fontSize: 18.0),
-              child: new Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  new Text('Flutter velocity\n${flutterFlingVelocity?.round()?.abs() ?? ""}'),
-                  new Text('Platform velocity\n${platformFlingVelocity?.round()?.abs() ?? ""}'),
+                  Text('Flutter velocity\n${flutterFlingVelocity?.round()?.abs() ?? ""}'),
+                  Text('Platform velocity\n${platformFlingVelocity?.round()?.abs() ?? ""}'),
                 ],
               ),
             )
