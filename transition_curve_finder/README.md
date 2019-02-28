@@ -1,16 +1,3 @@
 # transition_curve_finder
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.io/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.io/docs/cookbook)
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+A simple tool built for iOS that monitors page position during transition for finding the real animation curve. Data retrieved are saved to a file as points that represent a curve between 0 - 1. It was built for testing the fidelity of current Flutter CupertinoPageRoute animation but it can also be improved for other purposes.
