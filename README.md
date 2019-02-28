@@ -1,3 +1,9 @@
-# Scroll Overlay
+# Platform testing tools
 
-Overlays a native scroll view over the Flutter view. The scroll view displays items of a random color and opacity. The scroll view forwards all touch events it receives to the underlying Flutter view. This way, the scroll behavior of Flutter and native controls can be compared.
+This repository contains a collection of tools used to measure and test
+Flutter's fidelity around platform specific behaviors.
+
+## scroll_overlay
+
+Overlays a Flutter scrollable with a platform scrollable to compare
+interactive response.
