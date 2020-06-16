@@ -1,9 +1,8 @@
-package io.flutter.scrolloverlay;
+package io.flutter.scroll_overlay;
 
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -12,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.view.FlutterMain;
+import io.flutter.view.FlutterRunArguments;
 import io.flutter.view.FlutterView;
 
 public class ScrollOverlayActivity extends Activity {
+
     private static final String TAG = "ScrollOverlayActivity";
+
     private static final String VELOCITY_CHANNEL = "scroll_overlay.flutter.io/velocity";
 
     private static final int[] OVERLAY_COLORS = new int[]{0x40ff0000, 0x4000ff00, 0x400000ff};
@@ -32,10 +33,13 @@ public class ScrollOverlayActivity extends Activity {
         FlutterMain.ensureInitializationComplete(getApplicationContext(), null);
         setContentView(R.layout.scroll_overlay_layout);
 
-        flutterView = (FlutterView) findViewById(R.id.flutter_view);
-        flutterView.runFromBundle(FlutterMain.findAppBundlePath(getApplicationContext()), null);
+        flutterView = findViewById(R.id.flutter_view);
+        final FlutterRunArguments args = new FlutterRunArguments();
+        args.bundlePath = FlutterMain.findAppBundlePath();
+        args.entrypoint = "main";
+        flutterView.runFromBundle(args);
 
-        ListView overlayList = (ListView) findViewById(R.id.overlay_list);
+        ListView overlayList = findViewById(R.id.overlay_list);
         overlayList.setAdapter(new OverlayAdapter());
 
         overlayList.setOnTouchListener(new View.OnTouchListener() {
@@ -43,7 +47,7 @@ public class ScrollOverlayActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 flutterView.dispatchTouchEvent(event);
                 return false;
-            };
+            }
         });
 
         new EventChannel(flutterView, VELOCITY_CHANNEL).setStreamHandler(
@@ -88,6 +92,22 @@ public class ScrollOverlayActivity extends Activity {
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onStop() {
+        if (flutterView != null) {
+            flutterView.onStop();
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (flutterView != null) {
+            flutterView.onStart();
+        }
     }
 
     private class OverlayAdapter extends BaseAdapter {
