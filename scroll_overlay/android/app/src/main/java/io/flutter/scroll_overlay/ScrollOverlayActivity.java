@@ -40,6 +40,7 @@ public class ScrollOverlayActivity extends Activity {
         flutterView.runFromBundle(args);
 
         ListView overlayList = findViewById(R.id.overlay_list);
+        overlayList.setDividerHeight(0);
         overlayList.setAdapter(new OverlayAdapter());
 
         overlayList.setOnTouchListener(new View.OnTouchListener() {
@@ -130,21 +131,19 @@ public class ScrollOverlayActivity extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 TextView textView = new TextView(ScrollOverlayActivity.this);
-                textView.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    (int) TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        40,
-                        getResources().getDisplayMetrics())));
                 textView.setTextColor(0xFF000000);
                 textView.setGravity(Gravity.CENTER_VERTICAL);
                 textView.setTextSize(15);
                 textView.setPadding((int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    6,
-                    getResources().getDisplayMetrics()), 0, 0, 0);
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        6,
+                        getResources().getDisplayMetrics()), 0, 0, 0);
                 convertView = textView;
             }
+
+            final int height = (int) TypedValue
+                    .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40 + position, getResources().getDisplayMetrics());
+            convertView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
             int color = OVERLAY_COLORS[position % OVERLAY_COLORS.length];
             convertView.setBackground(new ColorDrawable(color));
             ((TextView) convertView).setText("Android " + position);
