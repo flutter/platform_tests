@@ -58,7 +58,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
             itemCount: 1000,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                constraints: BoxConstraints(minHeight: (40 + index).toDouble()),
+                height: (40 + index).toDouble(),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF666666),
