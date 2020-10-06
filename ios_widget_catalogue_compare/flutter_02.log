@@ -1,0 +1,68 @@
+Flutter crash report.
+Please report a bug at https://github.com/flutter/flutter/issues.
+
+## command
+
+flutter run --verbose
+
+## exception
+
+StateError: Bad state: The client closed with pending request "streamListen".
+
+```
+#0      new Client.withoutJson.<anonymous closure> (package:json_rpc_2/src/client.dart:70:24)
+#1      _rootRun (dart:async/zone.dart:1182:47)
+#2      _CustomZone.run (dart:async/zone.dart:1093:19)
+#3      _FutureListener.handleWhenComplete (dart:async/future_impl.dart:167:18)
+#4      Future._propagateToListeners.handleWhenCompleteCallback (dart:async/future_impl.dart:666:39)
+#5      Future._propagateToListeners (dart:async/future_impl.dart:722:37)
+#6      Future._propagateToListeners (dart:async/future_impl.dart:621:9)
+#7      Future._completeWithValue (dart:async/future_impl.dart:529:5)
+#8      Future._asyncCompleteWithValue.<anonymous closure> (dart:async/future_impl.dart:567:7)
+#9      _rootRun (dart:async/zone.dart:1190:13)
+#10     _CustomZone.run (dart:async/zone.dart:1093:19)
+#11     _CustomZone.runGuarded (dart:async/zone.dart:997:7)
+#12     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1037:23)
+#13     _microtaskLoop (dart:async/schedule_microtask.dart:41:21)
+#14     _startMicrotaskLoop (dart:async/schedule_microtask.dart:50:5)
+#15     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:118:13)
+#16     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:169:5)
+```
+
+## flutter doctor
+
+```
+[✓] Flutter (Channel modal_popup, 1.23.0-8.0.pre.34, on Mac OS X 10.15.6 19G2021 x86_64, locale en-US)
+    • Flutter version 1.23.0-8.0.pre.34 at /Users/danieledrisian/Desktop/flutter
+    • Framework revision 2a502c907d (6 days ago), 2020-09-29 13:36:54 -0700
+    • Engine revision 3a73d073c8
+    • Dart version 2.11.0 (build 2.11.0-161.0.dev)
+
+[✓] Android toolchain - develop for Android devices (Android SDK version 30.0.2)
+    • Android SDK at /Users/danieledrisian/Library/Android/sdk
+    • Platform android-30, build-tools 30.0.2
+    • Java binary at: /Applications/Android Studio.app/Contents/jre/jdk/Contents/Home/bin/java
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6222593)
+    • All Android licenses accepted.
+
+[✓] Xcode - develop for iOS and macOS (Xcode 12.0)
+    • Xcode at /Applications/Xcode.app/Contents/Developer
+    • Xcode 12.0, Build version 12A7209
+    • CocoaPods version 1.9.3
+
+[!] Android Studio (version 4.0)
+    • Android Studio at /Applications/Android Studio.app/Contents
+    ✗ Flutter plugin not installed; this adds Flutter specific functionality.
+    ✗ Dart plugin not installed; this adds Dart specific functionality.
+    • Java version OpenJDK Runtime Environment (build 1.8.0_242-release-1644-b3-6222593)
+
+[✓] VS Code (version 1.49.1)
+    • VS Code at /Applications/Visual Studio Code.app/Contents
+    • Flutter extension version 3.15.0
+
+[✓] Connected device (1 available)
+    • iPhone 11 Pro (mobile) • 94F59CD5-50FE-4BDA-88DD-42DD6FAEED74 • ios • com.apple.CoreSimulator.SimRuntime.iOS-14-0
+      (simulator)
+
+! Doctor found issues in 1 category.
+```
