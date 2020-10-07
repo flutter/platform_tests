@@ -1,17 +1,17 @@
-# overlay_ios
+# iOS Catalog
 
-A Flutter SwiftUI overlay, for testing purposes. 
+A Flutter-SwiftUI widget catalog, for testing purposes. 
 
 - [x] Shows SwiftUI overlay on top of Flutter application
 - [x] Shows sliders for offsets and alpha
 - [x] Shows dropdown menu for different widgets
-- [x] Displays flutter widget when dropdown is clicked
-- [x] Lets you add widgets in a dictionary style
-- [ ] Refactored and unified code
+- [x] Lets you add widgets into a dictionary (map)
 
-[Screen recording of demo](https://github.com/DanielEdrisian/FlutterSwiftUIOverlay/blob/master/final%20scr.mov)
+[Screen Recording of Demo](https://github.com/DanielEdrisian/SharedStorage/blob/main/overlay%20demo%202.mov)
+
+[Old Demo](https://github.com/DanielEdrisian/SharedStorage/blob/main/final%20scr.mov)
 
 # Get Started
 
-To add your SwiftUI code, open `OverlaySwiftUIView.swift` and add your widgets.
-Make sure to add corresponding keys to both `OverlayFlutterViewController` and `main.dart`.
+To add your SwiftUI code, open `OverlaySwiftUIView.swift` and add your controls to the dictionary.
+Make sure to add the corresponding Flutter widgets to `main.dart`.
