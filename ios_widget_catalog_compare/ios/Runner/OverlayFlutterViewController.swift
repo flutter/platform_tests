@@ -13,13 +13,28 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
   
   let dropDownButton: UIButton = UIButton(frame: CGRect(x: 13, y: 50, width: 300, height: 40))
   let disclaimerLabel: UILabel = UILabel()
+  let xLabel: UILabel = UILabel()
+  let yLabel: UILabel = UILabel()
+  let alphaLabel: UILabel = UILabel()
   let resetButton: UIButton = UIButton()
   let xSlider: UISlider = UISlider()
   let ySlider: UISlider = UISlider()
   let alphaSlider: UISlider = UISlider()
-  lazy var slidersStackViewHeader: UIStackView = UIStackView(arrangedSubviews: [disclaimerLabel, resetButton])
-  lazy var slidersStackView: UIStackView = UIStackView(arrangedSubviews: [slidersStackViewHeader, xSlider, ySlider, alphaSlider])
-  lazy var swiftUIController: UIViewController = UIHostingController(rootView: OverlaySwiftUIView(controller: self))
+  lazy var slidersStackViewHeader: UIStackView =
+    UIStackView(arrangedSubviews: [disclaimerLabel, resetButton])
+  lazy var slidersStackViewFirstRow: UIStackView =
+    UIStackView(arrangedSubviews: [xLabel, xSlider])
+  lazy var slidersStackViewSecondRow: UIStackView =
+    UIStackView(arrangedSubviews: [yLabel, ySlider])
+  lazy var slidersStackViewThirdRow: UIStackView =
+    UIStackView(arrangedSubviews: [alphaLabel, alphaSlider])
+  lazy var slidersStackView: UIStackView =
+    UIStackView(arrangedSubviews: [slidersStackViewHeader,
+                                   slidersStackViewFirstRow,
+                                   slidersStackViewSecondRow,
+                                   slidersStackViewThirdRow])
+  lazy var swiftUIController: UIViewController =
+    UIHostingController(rootView: OverlaySwiftUIView(controller: self))
   
   lazy var overlaySwiftUIView: OverlaySwiftUIView = OverlaySwiftUIView(controller: self)
   
@@ -31,7 +46,9 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
   @Published var controlKey: String = ""
   
   var eventSink: FlutterEventSink?
-  lazy var eventChannel: FlutterEventChannel = FlutterEventChannel(name: "overlay_ios.flutter.io/responder", binaryMessenger: self as! FlutterBinaryMessenger)
+  lazy var eventChannel: FlutterEventChannel =
+    FlutterEventChannel(name: "overlay_ios.flutter.io/responder",
+                        binaryMessenger: self as! FlutterBinaryMessenger)
   
   // MARK: App cycle methods
   
@@ -39,6 +56,9 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
     super.viewDidLoad()
     
     disclaimerLabel.text = "SwiftUI Modifiers"
+    xLabel.text = "x  "
+    yLabel.text = "y  "
+    alphaLabel.text = "a  "
     
     resetButton.setTitle("Reset", for: .normal)
     resetButton.setTitleColor(.systemBlue, for: .normal)
@@ -68,7 +88,8 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
     slidersStackView.center = self.view.center
     slidersStackView.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3)
     slidersStackView.isLayoutMarginsRelativeArrangement = true
-    slidersStackView.directionalLayoutMargins = NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 20)
+    slidersStackView.directionalLayoutMargins =
+      NSDirectionalEdgeInsets(top: 10, leading: 20, bottom: 0, trailing: 20)
     slidersStackView.spacing = UIStackView.spacingUseSystem
     
     dropDownButton.setTitle("Select Control", for: .normal)
@@ -83,7 +104,12 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
              children: overlaySwiftUIView.controlDictionary.map({ (key, arg2) -> UIAction in
               
               let (title, _) = arg2
-              return UIAction(title: title, image: nil, identifier: nil, discoverabilityTitle: nil, attributes: [], state: .off) { (action) in
+              return UIAction(title: title,
+                              image: nil,
+                              identifier: nil,
+                              discoverabilityTitle: nil,
+                              attributes: [],
+                              state: .off) { (action) in
                 self.eventSink?(key)
                 self.dropDownButton.setTitle(title, for: .normal)
                 self.controlKey = key
@@ -108,7 +134,10 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
     
     self.view.addSubview(slidersStackView)
     let stackViewHeight: CGFloat = 150.0
-    slidersStackView.frame = CGRect(x: 0, y: self.view.bounds.height - stackViewHeight - 25, width: self.view.bounds.width, height: stackViewHeight)
+    slidersStackView.frame = CGRect(x: 0,
+                                    y: self.view.bounds.height - stackViewHeight - 25,
+                                    width: self.view.bounds.width,
+                                    height: stackViewHeight)
     
     self.view.addSubview(dropDownButton)
   }
@@ -147,7 +176,8 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
   
   // MARK: Flutter Stream Handler
   
-  func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+  func onListen(withArguments arguments: Any?,
+                eventSink events: @escaping FlutterEventSink) -> FlutterError? {
     eventSink = events
     return nil
   }
@@ -185,6 +215,8 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler,
   // Returns whether one of the touches are within the bounds
   // of the slidersStackView.
   func fallsInStackView(touches: Set<UITouch>, event: UIEvent?) -> Bool {
-    !touches.filter { self.slidersStackView.point(inside: $0.location(in: self.slidersStackView), with: event) }.isEmpty
+    !touches.filter {
+      self.slidersStackView.point(inside: $0.location(in: self.slidersStackView), with: event)
+    }.isEmpty
   }
 }

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,6 +28,30 @@ class FlutterDemo extends StatefulWidget {
 class _FlutterDemoState extends State<FlutterDemo> {
   String controlName = 'Null';
 
+  Map<String, Widget> widgetMap = {
+    'CupertinoButton': CupertinoButton(
+      child: Text('Button'),
+      onPressed: () {/** */},
+    ),
+    'CupertinoTextField': CupertinoTextField(
+      placeholder: "Placeholder",
+    ),
+    'CupertinoPicker': CupertinoPicker(
+      scrollController: FixedExtentScrollController(initialItem: 3),
+      magnification: 1.2,
+      useMagnifier: true,
+      itemExtent: 32.0,
+      onSelectedItemChanged: (value) {},
+      children: const [
+        Text('One'),
+        Text('Two'),
+        Text('Three'),
+        Text('Four'),
+        Text('Five'),
+      ],
+    )
+  };
+
   @override
   void initState() {
     super.initState();
@@ -42,35 +65,8 @@ class _FlutterDemoState extends State<FlutterDemo> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Center(
-        child: widgetForKey(controlName),
+        child: widgetMap[controlName],
       ),
     );
-  }
-
-  Widget widgetForKey(String key) {
-    Map<String, Widget> map = {
-      'CupertinoButton': CupertinoButton(
-        child: Text('Button'),
-        onPressed: () {/** */},
-      ),
-      'CupertinoTextField': CupertinoTextField(
-        placeholder: "Placeholder",
-      ),
-      'CupertinoPicker': CupertinoPicker(
-        scrollController: FixedExtentScrollController(initialItem: 3),
-        magnification: 1.2,
-        useMagnifier: true,
-        itemExtent: 32.0,
-        onSelectedItemChanged: (value) {},
-        children: const [
-          Text('One'),
-          Text('Two'),
-          Text('Three'),
-          Text('Four'),
-          Text('Five'),
-        ],
-      )
-    };
-    return map[key];
   }
 }
