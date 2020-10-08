@@ -12,11 +12,8 @@ const EventChannel _platformEventChannel =
 
 void main() {
   runApp(
-    MaterialApp(
+    CupertinoApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: FlutterDemo(),
     ),
   );
@@ -43,9 +40,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[Align(child: widgetForKey(controlName))],
+    return CupertinoPageScaffold(
+      child: Center(
+        child: widgetForKey(controlName),
       ),
     );
   }
