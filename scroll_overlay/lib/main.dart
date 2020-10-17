@@ -56,9 +56,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
           ListView.builder(
             physics: instrumentingPhysics,
             itemCount: 1000,
-            itemExtent: 40.0,
             itemBuilder: (BuildContext context, int index) {
               return Container(
+                height: (40 + index).toDouble(),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF666666),
