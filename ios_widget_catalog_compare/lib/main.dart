@@ -4,7 +4,6 @@
 
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 const EventChannel _platformEventChannel =
     const EventChannel('overlay_ios.flutter.io/responder');
@@ -94,7 +93,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
           },
         );
 
-      case 'CupertinoFormSection.groupInset':
+      case 'CupertinoFormSectionGroupInsetDemo':
         return Form(
           key: _formKey,
           child: Padding(
@@ -166,15 +165,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 16.0, horizontal: 16.0),
-                  child: ElevatedButton(
+                  child: CupertinoButton(
                     onPressed: () {
-                      // Validate returns true if the form is valid, or false
-                      // otherwise.
-                      print("Hi");
                       if (_formKey.currentState.validate()) {
-                        // If the form is valid, display a Snackbar.
-                        print("Validated");
-
                         showCupertinoDialog(
                           context: context,
                           builder: (context) => CupertinoAlertDialog(
@@ -268,15 +261,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 16.0, horizontal: 16.0),
-                  child: ElevatedButton(
+                  child: CupertinoButton(
                     onPressed: () {
-                      // Validate returns true if the form is valid, or false
-                      // otherwise.
-                      print("Hi");
                       if (_formKey.currentState.validate()) {
-                        // If the form is valid, display a Snackbar.
-                        print("Validated");
-
                         showCupertinoDialog(
                           context: context,
                           builder: (context) => CupertinoAlertDialog(

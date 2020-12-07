@@ -13,9 +13,7 @@ struct OverlaySwiftUIView: View {
   @State var text: String = ""
   
   @State var selectedText: String = ""
-  
-  @State var showingModal = false
-  
+    
   @State var toggle = false
   
   // Add your controls here
@@ -41,7 +39,34 @@ struct OverlaySwiftUIView: View {
       ("Cupertino Search TextField",
        AnyView(SearchBar(text: $text))
       ),
-     "CupertinoFormSection.groupInset":
+     "CupertinoFormSection":
+      ("Cupertino Form Section",
+       AnyView(
+        Form {
+          Section(header: Text("Section 1")) {
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+          }
+          Section(header: Text("Section 2")) {
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            Toggle("Toggle", isOn: $toggle)
+          }
+        })
+      ),
+     "CupertinoFormSectionGroupInsetDemo":
       ("Cupertino Form Section (Group Inset)",
        AnyView(
         Form {
