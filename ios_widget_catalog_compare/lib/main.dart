@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -27,30 +26,9 @@ class FlutterDemo extends StatefulWidget {
 
 class _FlutterDemoState extends State<FlutterDemo> {
   String controlName = 'Null';
-
-  Map<String, Widget> widgetMap = {
-    'CupertinoButton': CupertinoButton(
-      child: Text('Button'),
-      onPressed: () {/** */},
-    ),
-    'CupertinoTextField': CupertinoTextField(
-      placeholder: "Placeholder",
-    ),
-    'CupertinoPicker': CupertinoPicker(
-      scrollController: FixedExtentScrollController(initialItem: 3),
-      magnification: 1.2,
-      useMagnifier: true,
-      itemExtent: 32.0,
-      onSelectedItemChanged: (value) {},
-      children: const [
-        Text('One'),
-        Text('Two'),
-        Text('Three'),
-        Text('Four'),
-        Text('Five'),
-      ],
-    )
-  };
+  TextEditingController textController;
+  bool toggleValue = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -59,14 +37,256 @@ class _FlutterDemoState extends State<FlutterDemo> {
     _platformEventChannel.receiveBroadcastStream().listen((dynamic name) {
       if (name != controlName) setState(() => controlName = name);
     });
+
+    textController = TextEditingController(text: '');
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Center(
-        child: widgetMap[controlName],
+        child: Padding(
+          padding: EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 8.0),
+          child: widgetPicker(context),
+        ),
       ),
     );
+  }
+
+  Widget widgetPicker(BuildContext context) {
+    switch (controlName) {
+      case 'CupertinoButton':
+        return CupertinoButton(
+          child: Text('Button'),
+          onPressed: () {/** */},
+        );
+
+      case 'CupertinoTextField':
+        return CupertinoTextField(
+          placeholder: "Placeholder",
+        );
+
+      case 'CupertinoPicker':
+        return CupertinoPicker(
+          scrollController: FixedExtentScrollController(initialItem: 3),
+          magnification: 1.2,
+          useMagnifier: true,
+          itemExtent: 32.0,
+          onSelectedItemChanged: (value) {},
+          children: const [
+            Text('One'),
+            Text('Two'),
+            Text('Three'),
+            Text('Four'),
+            Text('Five'),
+          ],
+        );
+
+      case 'CupertinoSearchTextField':
+        return CupertinoSearchTextField(
+          controller: textController,
+          onChanged: (value) {
+            print("The text has changed to: " + value);
+          },
+          onSubmitted: (value) {
+            print("Submitted text: " + value);
+          },
+        );
+
+      case 'CupertinoFormSectionGroupInsetDemo':
+        return Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                CupertinoFormSection.insetGrouped(
+                  header: Text("SECTION 1"),
+                  children: [
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+                CupertinoFormSection.insetGrouped(
+                  header: Text("SECTION 1"),
+                  children: [
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                    CupertinoFormRow(
+                      prefix: Text('Toggle'),
+                      child: CupertinoSwitch(
+                        value: this.toggleValue,
+                        onChanged: (value) {
+                          setState(() {
+                            this.toggleValue = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 16.0),
+                  child: CupertinoButton(
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        showCupertinoDialog(
+                          context: context,
+                          builder: (context) => CupertinoAlertDialog(
+                            title: Text('Validated'),
+                            actions: [
+                              CupertinoDialogAction(
+                                  child: Text('Ok'),
+                                  onPressed: () => Navigator.pop(context)),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    child: Text('Submit'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+
+      case 'CupertinoFormSection':
+        return Form(
+          key: _formKey,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                CupertinoFormSection(
+                  header: Text("SECTION 1"),
+                  children: [
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+                CupertinoFormSection(
+                  header: Text("SECTION 1"),
+                  children: [
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                    CupertinoTextFormFieldRow(
+                      prefix: Text('Enter text'),
+                      placeholder: "Enter text",
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter a value';
+                        }
+                        return null;
+                      },
+                    ),
+                    CupertinoFormRow(
+                      prefix: Text('Toggle'),
+                      child: CupertinoSwitch(
+                        value: this.toggleValue,
+                        onChanged: (value) {
+                          setState(() {
+                            this.toggleValue = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 16.0),
+                  child: CupertinoButton(
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        showCupertinoDialog(
+                          context: context,
+                          builder: (context) => CupertinoAlertDialog(
+                            title: Text('Validated'),
+                            actions: [
+                              CupertinoDialogAction(
+                                  child: Text('Ok'),
+                                  onPressed: () => Navigator.pop(context)),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    child: Text('Submit'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      default:
+        break;
+    }
+    return null;
   }
 }
