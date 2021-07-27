@@ -93,6 +93,12 @@ struct OverlaySwiftUIView: View {
           }
         })
       ),
+      "CupertinoActivityIndicator":
+        ("Cupertino Activity Indicator (Progress View)",
+         AnyView(
+           ProgressView()
+         )
+        ),
     ]
   }
   
