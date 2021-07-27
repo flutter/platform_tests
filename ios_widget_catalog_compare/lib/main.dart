@@ -284,6 +284,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
             ),
           ),
         );
+
+      case "CupertinoActivityIndicator":
+        return CupertinoActivityIndicator();
       default:
         break;
     }
