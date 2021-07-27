@@ -7,137 +7,131 @@ import SwiftUI
 /// The SwiftUI view that appears as an overlay to our Flutter.
 @available(iOS 14.0, *)
 struct OverlaySwiftUIView: View {
+  
+  @ObservedObject var controller: OverlayFlutterViewController
+  
+  @State var text: String = ""
+  
+  @State var selectedText: String = ""
     
-    @ObservedObject var controller: OverlayFlutterViewController
-    
-    @State var text: String = ""
-    
-    @State var selectedText: String = ""
-    
-    @State var toggle = false
-    
-    // Add your controls here
-    var controlDictionary: [String: (String, AnyView)] {
-        ["CupertinoButton": // Key
-         ("Cupertino Button", // Dropdown menu title
-          AnyView(Button("Button", action: { }))  // View
-         ),
-         "CupertinoTextField":
-            ("Cupertino TextField",
-             AnyView(TextField("Placeholder", text: $text)
-                        .textFieldStyle(RoundedBorderTextFieldStyle()))
-            ),
-         "CupertinoPicker":
-            ("Cupertino Picker",
-             AnyView(Picker(selection: $selectedText, label: Text("")) {
-            ForEach(["One", "Two", "Three", "Four", "Five"], id: \.self) {
-                Text($0)
+  @State var toggle = false
+  
+  // Add your controls here
+  var controlDictionary: [String: (String, AnyView)] {
+    ["CupertinoButton": // Key
+      ("Cupertino Button", // Dropdown menu title
+       AnyView(Button("Button", action: { }))  // View
+      ),
+     "CupertinoTextField":
+      ("Cupertino TextField",
+       AnyView(TextField("Placeholder", text: $text)
+                .textFieldStyle(RoundedBorderTextFieldStyle()))
+      ),
+     "CupertinoPicker":
+      ("Cupertino Picker",
+       AnyView(Picker(selection: $selectedText, label: Text("")) {
+        ForEach(["One", "Two", "Three", "Four", "Five"], id: \.self) {
+          Text($0)
+        }
+       })
+      ),
+     "CupertinoSearchTextField":
+      ("Cupertino Search TextField",
+       AnyView(SearchBar(text: $text))
+      ),
+     "CupertinoFormSection":
+      ("Cupertino Form Section",
+       AnyView(
+        Form {
+          Section(header: Text("Section 1")) {
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
             }
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+          }
+          Section(header: Text("Section 2")) {
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            Toggle("Toggle", isOn: $toggle)
+          }
         })
-            ),
-         "CupertinoSearchTextField":
-            ("Cupertino Search TextField",
-             AnyView(SearchBar(text: $text))
-            ),
-         "CupertinoFormSection":
-            ("Cupertino Form Section",
-             AnyView(
-                Form {
-                    Section(header: Text("Section 1")) {
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                    }
-                    Section(header: Text("Section 2")) {
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                        Toggle("Toggle", isOn: $toggle)
-                    }
-                })
-            ),
-         "CupertinoFormSectionGroupInsetDemo":
-            ("Cupertino Form Section (Group Inset)",
-             AnyView(
-                Form {
-                    Section(header: Text("Section 1")) {
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                    }
-                    Section(header: Text("Section 2")) {
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                        HStack {
-                            Text("Enter text")
-                            TextField("Enter text", text: $text)
-                        }
-                        Toggle("Toggle", isOn: $toggle)
-                    }
-                })
-            ),
-         "CupertinoActivityIndicator":
-            ("Cupertino Activity Indicator (Progress View)",
-             AnyView(
-                ProgressView()
-             )
-            ),
-        ]
-    }
-    
-    var body: some View {
-        (controlDictionary[controller.controlKey]?.1 ?? AnyView(Text("Nothing Selected")))
-        .frame(maxWidth: .infinity, maxHeight: .infinity).edgesIgnoringSafeArea(.all)  }
+      ),
+     "CupertinoFormSectionGroupInsetDemo":
+      ("Cupertino Form Section (Group Inset)",
+       AnyView(
+        Form {
+          Section(header: Text("Section 1")) {
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+          }
+          Section(header: Text("Section 2")) {
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            HStack {
+              Text("Enter text")
+              TextField("Enter text", text: $text)
+            }
+            Toggle("Toggle", isOn: $toggle)
+          }
+        })
+      ),
+    ]
+  }
+  
+  var body: some View {
+    (controlDictionary[controller.controlKey]?.1 ?? AnyView(Text("Nothing Selected")))
+      .frame(maxWidth: .infinity, maxHeight: .infinity).edgesIgnoringSafeArea(.all)  }
 }
 
 @available(iOS 14.0, *)
 struct SearchBar: UIViewRepresentable {
+  
+  @Binding var text: String
+  
+  class Coordinator: NSObject, UISearchBarDelegate {
     
     @Binding var text: String
     
-    class Coordinator: NSObject, UISearchBarDelegate {
-        
-        @Binding var text: String
-        
-        init(text: Binding<String>) {
-            _text = text
-        }
-        
-        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-            text = searchText
-        }
+    init(text: Binding<String>) {
+      _text = text
     }
     
-    func makeCoordinator() -> SearchBar.Coordinator {
-        return Coordinator(text: $text)
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+      text = searchText
     }
-    
-    func makeUIView(context: UIViewRepresentableContext<SearchBar>) -> UISearchBar {
-        let searchBar = UISearchBar(frame: .zero)
-        searchBar.delegate = context.coordinator
-        searchBar.searchBarStyle = .minimal
-        searchBar.placeholder = "Search"
-        return searchBar
-    }
-    
-    func updateUIView(_ uiView: UISearchBar, context: UIViewRepresentableContext<SearchBar>) {
-        uiView.text = text
-    }
+  }
+  
+  func makeCoordinator() -> SearchBar.Coordinator {
+    return Coordinator(text: $text)
+  }
+  
+  func makeUIView(context: UIViewRepresentableContext<SearchBar>) -> UISearchBar {
+    let searchBar = UISearchBar(frame: .zero)
+    searchBar.delegate = context.coordinator
+    searchBar.searchBarStyle = .minimal
+    searchBar.placeholder = "Search"
+    return searchBar
+  }
+  
+  func updateUIView(_ uiView: UISearchBar, context: UIViewRepresentableContext<SearchBar>) {
+    uiView.text = text
+  }
 }
