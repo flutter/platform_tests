@@ -40,8 +40,9 @@ public class ScrollOverlayActivity extends Activity {
         Runnable velocityTrackerRunnable = new Runnable() {
             @Override
             public void run() {
-                if (flutterEngine == null)
+                if (flutterEngine == null) {
                     return;
+                }
                 if (!locked) {
                     velocitySink.success((double) currentDy * ticksPerSecond);
                     if (currentDy == 0) {
@@ -49,7 +50,7 @@ public class ScrollOverlayActivity extends Activity {
                     }
                     currentDy = 0;
                 }
-                handler.postDelayed(velocityTrackerRunnable,1000 / ticksPerSecond);
+                handler.postDelayed(velocityTrackerRunnable, 1000 / ticksPerSecond);
             }
         };
 
