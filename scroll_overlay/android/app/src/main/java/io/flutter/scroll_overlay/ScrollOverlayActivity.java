@@ -29,13 +29,20 @@ public class ScrollOverlayActivity extends Activity {
     private static final String engineId = "engine_id";
 
     FlutterEngine flutterEngine;
-    EventChannel.EventSink velocitySink;
 
     class VelocityTracker extends RecyclerView.OnScrollListener {
         int currentDy = 0;
         boolean locked = false;
+        EventChannel.EventSink velocitySink;
 
-        final int ticksPerSecond = 25;
+        /**
+         * How many times the velocity is measured per second.
+         * <p>
+         * Setting this to not too small value - to get a meaningful velocity information,
+         * and not too big - to distinguish individual digits after thousands.
+         */
+        static final int measurementsPerSecond = 25;
+
         final Handler handler = new Handler(Looper.getMainLooper());
         Runnable velocityTrackerRunnable = new Runnable() {
             @Override
@@ -44,22 +51,24 @@ public class ScrollOverlayActivity extends Activity {
                     return;
                 }
                 if (!locked) {
-                    velocitySink.success((double) currentDy * ticksPerSecond);
+                    velocitySink.success((double) currentDy * measurementsPerSecond);
                     if (currentDy == 0) {
                         locked = true;
                     }
                     currentDy = 0;
                 }
-                handler.postDelayed(velocityTrackerRunnable, 1000 / ticksPerSecond);
+                handler.postDelayed(velocityTrackerRunnable, 1000 / measurementsPerSecond);
             }
         };
 
-        void start() {
+        void start(EventChannel.EventSink velocitySink) {
+            this.velocitySink = velocitySink;
             velocityTrackerRunnable.run();
         }
 
         void stop() {
             handler.removeCallbacksAndMessages(null);
+            velocitySink = null;
         }
 
         @Override
@@ -90,14 +99,12 @@ public class ScrollOverlayActivity extends Activity {
                 new EventChannel.StreamHandler() {
                     @Override
                     public void onListen(Object arguments, EventChannel.EventSink events) {
-                        velocitySink = events;
-                        velocityTracker.start();
+                        velocityTracker.start(events);
                     }
 
                     @Override
                     public void onCancel(Object arguments) {
                         velocityTracker.stop();
-                        velocitySink = null;
                     }
                 }
         );
@@ -172,11 +179,18 @@ public class ScrollOverlayActivity extends Activity {
                 super(itemView);
             }
 
+            /**
+             * The base item extent at 0 index.
+             * <p>
+             * Each item will have an extent = this + index.
+             */
+            static final int baseItemExtent = 40;
+
             void bind(int position) {
                 int color = OVERLAY_COLORS[position % OVERLAY_COLORS.length];
                 itemView.setBackground(new ColorDrawable(color));
                 final int height = (int) TypedValue
-                        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40 + position, getResources().getDisplayMetrics());
+                        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, baseItemExtent + position, getResources().getDisplayMetrics());
                 itemView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
                 TextView textView = itemView.findViewById(R.id.text_view);
                 textView.setText("Android " + position);

@@ -29,12 +29,22 @@ class FlutterDemo extends StatefulWidget {
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
+  /// How many times the velocity is measured per second.
+  ///
+  /// Setting this to not too small value - to get a meaningful velocity information,
+  /// and not too big - to distinguish individual digits after thousands.
+  static const int measurementsPerSecond = 25;
+  static const Duration velocityTimerInverval = Duration(milliseconds: 1000 ~/ measurementsPerSecond);
+
+  /// The base item extent at 0 index.
+  ///
+  /// Each item will have an extent = this + index.
+  static const int baseItemExtent = 40;
+
   double? flutterVelocity;
   double? platformVelocity;
   final ScrollController controller = ScrollController();
   late Timer velocityTimer;
-  static const Duration velocityTimerInverval = Duration(milliseconds: 1000 ~/ ticksPerSecond);
-  static const int ticksPerSecond = 25;
   double? oldOffset;
 
   @override
@@ -44,7 +54,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
       velocityTimer = Timer.periodic(velocityTimerInverval, (timer) {
         if (oldOffset != null) {
           final double delta = controller.offset - oldOffset!;
-          final double velocity = delta * ticksPerSecond;
+          final double velocity = delta * measurementsPerSecond;
           if (velocity != flutterVelocity) {
             setState(() {
               flutterVelocity = velocity;
@@ -80,7 +90,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
             itemCount: 1000,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                height: (40 + index).toDouble(),
+                height: (baseItemExtent + index).toDouble(),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF666666),
