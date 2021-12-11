@@ -1,10 +1,12 @@
 package io.flutter.scroll_overlay;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,9 +15,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.lang.reflect.Field;
 
 import io.flutter.embedding.android.FlutterView;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -115,6 +120,21 @@ public class ScrollOverlayActivity extends Activity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(new OverlayAdapter());
         recyclerView.addOnScrollListener(velocityTracker);
+
+        try {
+            // Remove the touch slop, since in Flutter the slop is only present when
+            // there are multiple gesture detectors fighting in the arena.
+            //
+            // There's no way to configure that neither in Flutter, nor in Android,
+            // reflection is the only option.
+            Field field = recyclerView.getClass().getDeclaredField("mTouchSlop");
+            field.setAccessible(true);
+            field.set(recyclerView, 0);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
 
         recyclerView.setOnTouchListener((v, event) -> {
             flutterView.dispatchTouchEvent(event);
