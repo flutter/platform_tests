@@ -50,7 +50,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       velocityTimer = Timer.periodic(velocityTimerInverval, (timer) {
         if (oldOffset != null) {
           final double delta = controller.offset - oldOffset!;

@@ -128,9 +128,10 @@ public class ScrollOverlayActivity extends Activity {
             field.setAccessible(true);
             field.set(recyclerView, 0);
         } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
+            // It won't work in release mode
+            System.out.println("mTouch slope reflection failed");
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            System.out.println("mTouch slope reflection failed");
         }
 
         recyclerView.setOnTouchListener((v, event) -> {
