@@ -3,151 +3,223 @@ package io.flutter.scroll_overlay;
 import android.app.Activity;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.lang.reflect.Field;
+
+import io.flutter.embedding.android.FlutterView;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.plugin.common.EventChannel;
-import io.flutter.view.FlutterMain;
-import io.flutter.view.FlutterRunArguments;
-import io.flutter.view.FlutterView;
 
 public class ScrollOverlayActivity extends Activity {
-
-    private static final String TAG = "ScrollOverlayActivity";
-
     private static final String VELOCITY_CHANNEL = "scroll_overlay.flutter.io/velocity";
-
     private static final int[] OVERLAY_COLORS = new int[]{0x40ff0000, 0x4000ff00, 0x400000ff};
+    private static final String engineId = "engine_id";
 
-    private FlutterView flutterView;
+    FlutterEngine flutterEngine;
+
+    class VelocityTracker extends RecyclerView.OnScrollListener {
+        int currentDy = 0;
+        boolean locked = false;
+        EventChannel.EventSink velocitySink;
+
+        /**
+         * How many times the velocity is measured per second.
+         * <p>
+         * Setting this to not too small value - to get a meaningful velocity information,
+         * and not too big - to distinguish individual digits after thousands.
+         */
+        static final int measurementsPerSecond = 25;
+
+        final Handler handler = new Handler(Looper.getMainLooper());
+        Runnable velocityTrackerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (flutterEngine == null) {
+                    return;
+                }
+                if (!locked) {
+                    velocitySink.success((double) currentDy * measurementsPerSecond);
+                    if (currentDy == 0) {
+                        locked = true;
+                    }
+                    currentDy = 0;
+                }
+                handler.postDelayed(velocityTrackerRunnable, 1000 / measurementsPerSecond);
+            }
+        };
+
+        void start(EventChannel.EventSink velocitySink) {
+            this.velocitySink = velocitySink;
+            velocityTrackerRunnable.run();
+        }
+
+        void stop() {
+            handler.removeCallbacksAndMessages(null);
+            velocitySink = null;
+        }
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            locked = false;
+            currentDy += dy;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FlutterMain.ensureInitializationComplete(getApplicationContext(), null);
         setContentView(R.layout.scroll_overlay_layout);
 
-        flutterView = findViewById(R.id.flutter_view);
-        final FlutterRunArguments args = new FlutterRunArguments();
-        args.bundlePath = FlutterMain.findAppBundlePath();
-        args.entrypoint = "main";
-        flutterView.runFromBundle(args);
+        VelocityTracker velocityTracker = new VelocityTracker();
 
-        ListView overlayList = findViewById(R.id.overlay_list);
-        overlayList.setDividerHeight(0);
-        overlayList.setAdapter(new OverlayAdapter());
+        // Create flutter view
+        flutterEngine = new FlutterEngine(this);
+        flutterEngine.getDartExecutor().executeDartEntrypoint(
+                DartExecutor.DartEntrypoint.createDefault());
+        FlutterEngineCache
+                .getInstance()
+                .put(engineId, flutterEngine);
+        FlutterView flutterView = findViewById(R.id.flutter_view);
+        flutterView.attachToFlutterEngine(flutterEngine);
+        new EventChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), VELOCITY_CHANNEL).setStreamHandler(
+                new EventChannel.StreamHandler() {
+                    @Override
+                    public void onListen(Object arguments, EventChannel.EventSink events) {
+                        velocityTracker.start(events);
+                    }
 
-        overlayList.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                flutterView.dispatchTouchEvent(event);
-                return false;
-            }
-        });
-
-        new EventChannel(flutterView, VELOCITY_CHANNEL).setStreamHandler(
-            new EventChannel.StreamHandler() {
-                @Override
-                public void onListen(Object arguments, EventChannel.EventSink events) {
-                    // Implement.
+                    @Override
+                    public void onCancel(Object arguments) {
+                        velocityTracker.stop();
+                    }
                 }
-
-                @Override
-                public void onCancel(Object arguments) {
-                    // Implement.
-                }
-            }
         );
+
+        // Create list
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, 0)); // Remove divider
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new OverlayAdapter());
+        recyclerView.addOnScrollListener(velocityTracker);
+
+        try {
+            // Remove the touch slop, since in Flutter the slop is only present when
+            // there are multiple gesture detectors fighting in the arena.
+            //
+            // There's no way to configure that neither in Flutter, nor in Android,
+            // reflection is the only option.
+            Field field = recyclerView.getClass().getDeclaredField("mTouchSlop");
+            field.setAccessible(true);
+            field.set(recyclerView, 0);
+        } catch (NoSuchFieldException e) {
+            // It won't work in release mode
+            System.out.println("mTouch slope reflection failed");
+        } catch (IllegalAccessException e) {
+            System.out.println("mTouch slope reflection failed");
+        }
+
+        recyclerView.setOnTouchListener((v, event) -> {
+            flutterView.dispatchTouchEvent(event);
+            return false;
+        });
     }
 
     @Override
     protected void onDestroy() {
-        if (flutterView != null) {
-            flutterView.destroy();
-        }
+        FlutterEngineCache.getInstance().remove(engineId);
+        flutterEngine.destroy();
+        flutterEngine = null;
         super.onDestroy();
     }
+
 
     @Override
     protected void onPause() {
         super.onPause();
-        flutterView.onPause();
+        flutterEngine.getLifecycleChannel().appIsInactive();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        flutterView.onPostResume();
+        flutterEngine.getLifecycleChannel().appIsResumed();
     }
 
     @Override
     public void onBackPressed() {
-        if (flutterView != null) {
-            flutterView.popRoute();
-            return;
-        }
+        flutterEngine.getNavigationChannel().popRoute();
         super.onBackPressed();
     }
 
     @Override
     protected void onStop() {
-        if (flutterView != null) {
-            flutterView.onStop();
-        }
+        flutterEngine.getLifecycleChannel().appIsPaused();
         super.onStop();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (flutterView != null) {
-            flutterView.onStart();
-        }
-    }
-
-    private class OverlayAdapter extends BaseAdapter {
+    private class OverlayAdapter extends RecyclerView.Adapter<OverlayAdapter.OverlayViewHolder> {
+        @NonNull
         @Override
-        public int getCount() {
+        public OverlayViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(ScrollOverlayActivity.this);
+            View view = inflater.inflate(R.layout.row, parent, false);
+            return new OverlayViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull OverlayViewHolder holder, int position) {
+            holder.bind(position);
+        }
+
+        @Override
+        public int getItemCount() {
             return Integer.MAX_VALUE;
         }
 
-        @Override
-        public Object getItem(int position) {
-            return position;
-        }
+        class OverlayViewHolder extends RecyclerView.ViewHolder {
+            public OverlayViewHolder(@NonNull View itemView) {
+                super(itemView);
+            }
 
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
+            /**
+             * The base item extent at 0 index.
+             * <p>
+             * Each item will have an extent = this + index.
+             */
+            static final int baseItemExtent = 40;
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                TextView textView = new TextView(ScrollOverlayActivity.this);
+            void bind(int position) {
+                int color = OVERLAY_COLORS[position % OVERLAY_COLORS.length];
+                itemView.setBackground(new ColorDrawable(color));
+                final int height = (int) TypedValue
+                        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, baseItemExtent + position, getResources().getDisplayMetrics());
+                itemView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
+                TextView textView = itemView.findViewById(R.id.text_view);
+                textView.setText("Android " + position);
                 textView.setTextColor(0xFF000000);
                 textView.setGravity(Gravity.CENTER_VERTICAL);
-                textView.setTextSize(15);
+                textView.setTextSize(16);
                 textView.setPadding((int) TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
                         6,
                         getResources().getDisplayMetrics()), 0, 0, 0);
-                convertView = textView;
             }
-
-            final int height = (int) TypedValue
-                    .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40 + position, getResources().getDisplayMetrics());
-            convertView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
-            int color = OVERLAY_COLORS[position % OVERLAY_COLORS.length];
-            convertView.setBackground(new ColorDrawable(color));
-            ((TextView) convertView).setText("Android " + position);
-            return convertView;
         }
     }
 }

@@ -2,12 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-const EventChannel _platformVelocityEventChannel =
-    const EventChannel('scroll_overlay.flutter.io/velocity');
+const EventChannel _platformVelocityEventChannel = EventChannel('scroll_overlay.flutter.io/velocity');
 
 void main() {
   runApp(
@@ -16,36 +16,68 @@ void main() {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: FlutterDemo(),
+      home: const FlutterDemo(),
     ),
   );
 }
 
 class FlutterDemo extends StatefulWidget {
-  FlutterDemo({Key key}) : super(key: key);
+  const FlutterDemo({Key? key}) : super(key: key);
 
   @override
   _FlutterDemoState createState() => _FlutterDemoState();
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
-  double flutterFlingVelocity;
-  double platformFlingVelocity;
-  InstrumentingScrollPhysics instrumentingPhysics;
+  /// How many times the velocity is measured per second.
+  ///
+  /// Setting this to not too small value - to get a meaningful velocity information,
+  /// and not too big - to distinguish individual digits after thousands.
+  static const int measurementsPerSecond = 25;
+  static const Duration velocityTimerInverval = Duration(milliseconds: 1000 ~/ measurementsPerSecond);
+
+  /// The base item extent at 0 index.
+  ///
+  /// Each item will have an extent = this + index.
+  static const int baseItemExtent = 40;
+
+  double? flutterVelocity;
+  double? platformVelocity;
+  final ScrollController controller = ScrollController();
+  late Timer velocityTimer;
+  double? oldOffset;
 
   @override
   void initState() {
     super.initState();
-    instrumentingPhysics = InstrumentingScrollPhysics(velocityListener: (double velocity) {
-      SchedulerBinding.instance.addPostFrameCallback((Duration timestamp) {
-        if (velocity != flutterFlingVelocity)
-          setState(() => flutterFlingVelocity = velocity);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      velocityTimer = Timer.periodic(velocityTimerInverval, (timer) {
+        if (oldOffset != null) {
+          final double delta = controller.offset - oldOffset!;
+          final double velocity = delta * measurementsPerSecond;
+          if (velocity != flutterVelocity) {
+            setState(() {
+              flutterVelocity = velocity;
+            });
+          }
+        }
+        oldOffset = controller.offset;
       });
     });
     _platformVelocityEventChannel.receiveBroadcastStream().listen((dynamic velocity) {
-      if (velocity != platformFlingVelocity)
-        setState(() => platformFlingVelocity = velocity);
+      if (velocity != platformVelocity) {
+        setState(() {
+          platformVelocity = velocity / MediaQuery.of(context).devicePixelRatio;
+        });
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    velocityTimer.cancel();
+    super.dispose();
   }
 
   @override
@@ -54,11 +86,11 @@ class _FlutterDemoState extends State<FlutterDemo> {
       body: Stack(
         children: <Widget>[
           ListView.builder(
-            physics: instrumentingPhysics,
+            controller: controller,
             itemCount: 1000,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                height: (40 + index).toDouble(),
+                height: (baseItemExtent + index).toDouble(),
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: const Color(0xFF666666),
@@ -76,7 +108,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       ),
                     ),
                   ],
-                )
+                ),
               );
             },
           ),
@@ -88,44 +120,14 @@ class _FlutterDemoState extends State<FlutterDemo> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Flutter velocity\n${flutterFlingVelocity?.round()?.abs() ?? ""}'),
-                  Text('Platform velocity\n${platformFlingVelocity?.round()?.abs() ?? ""}'),
+                  Text('Flutter velocity\n${flutterVelocity?.round().abs() ?? ""}'),
+                  Text('Platform velocity\n${platformVelocity?.round().abs() ?? ""}'),
                 ],
               ),
-            )
+            ),
           ),
         ],
       ),
     );
-  }
-}
-
-typedef void VelocityListener(double velocity);
-
-/// A ScrollPhysics that passes along its ballistic simulation's initial velocity.
-class InstrumentingScrollPhysics extends ScrollPhysics {
-  InstrumentingScrollPhysics({this.velocityListener, ScrollPhysics parent})
-      : super(parent: parent);
-
-  final VelocityListener velocityListener;
-
-  @override
-  InstrumentingScrollPhysics applyTo(ScrollPhysics ancestor) {
-    return new InstrumentingScrollPhysics(
-      velocityListener: velocityListener,
-      parent: buildParent(ancestor),
-    );
-  }
-
-  @override
-  Simulation createBallisticSimulation(ScrollMetrics position, double velocity) {
-    velocityListener?.call(velocity);
-    return super.createBallisticSimulation(position, velocity);
-  }
-
-  @override
-  double applyPhysicsToUserOffset(ScrollMetrics position, double offset) {
-    velocityListener?.call(null);
-    return super.applyPhysicsToUserOffset(position, offset);
   }
 }
