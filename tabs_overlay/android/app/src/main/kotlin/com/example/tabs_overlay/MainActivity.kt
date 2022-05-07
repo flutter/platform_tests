@@ -90,5 +90,4 @@ class CustomFrameLayout(context: Context, attrs: AttributeSet?) : FrameLayout(co
         flutterView.dispatchTouchEvent(ev)
         return super.dispatchTouchEvent(ev)
     }
-
 }

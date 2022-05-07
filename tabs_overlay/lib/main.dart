@@ -34,9 +34,7 @@ class MyApp extends StatelessWidget {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 40.0),
-                    child: Text(
-                      'Flutter $label',
-                    ),
+                    child: Text('Flutter $label'),
                   ),
                 );
               }).toList(),
