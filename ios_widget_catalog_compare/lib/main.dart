@@ -287,6 +287,19 @@ class _FlutterDemoState extends State<FlutterDemo> {
 
       case "CupertinoActivityIndicator":
         return CupertinoActivityIndicator();
+
+      case "CupertinoSliverNavigationBar":
+        return CustomScrollView(
+          slivers: [
+            CupertinoSliverNavigationBar(
+              largeTitle: Text("Title"),
+              backgroundColor: CupertinoColors.white,
+              stretch: true,
+              border: null,
+            ),
+          ],
+        );
+
       default:
         break;
     }

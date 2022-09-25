@@ -99,6 +99,15 @@ struct OverlaySwiftUIView: View {
            ProgressView()
          )
         ),
+      "CupertinoSliverNavigationBar":
+        ("Cupertino Sliver Navigation Bar",
+         AnyView(
+           NavigationView {
+            List {}
+            .navigationTitle("Title")
+           }
+         )
+        ),
     ]
   }
   
