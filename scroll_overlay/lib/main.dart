@@ -38,9 +38,9 @@ class FlutterDemo extends StatefulWidget {
 class _FlutterDemoState extends State<FlutterDemo> {
   /// How many times the velocity is measured per second.
   ///
-  /// Setting this to not too small value - to get a meaningful velocity information,
-  /// and not too big - to distinguish individual digits after thousands.
-  static const int measurementsPerSecond = 25;
+  /// This should evenly divide the frame rate, so that most measurement
+  /// intervals span the same number of frames.
+  static const int measurementsPerSecond = 30;
   static const Duration velocityTimerInverval = Duration(milliseconds: 1000 ~/ measurementsPerSecond);
 
   /// The base item extent at 0 index.

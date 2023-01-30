@@ -40,10 +40,10 @@ public class ScrollOverlayActivity extends Activity {
         /**
          * How many times the velocity is measured per second.
          * <p>
-         * Setting this to not too small value - to get a meaningful velocity information,
-         * and not too big - to distinguish individual digits after thousands.
+         * This should evenly divide the frame rate, so that most measurement
+         * intervals span the same number of frames.
          */
-        static final int measurementsPerSecond = 25;
+        static final int measurementsPerSecond = 30;
 
         final Handler handler = new Handler(Looper.getMainLooper());
         Runnable velocityTrackerRunnable = new Runnable() {
