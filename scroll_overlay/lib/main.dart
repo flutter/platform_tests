@@ -123,18 +123,89 @@ class _FlutterDemoState extends State<FlutterDemo> {
             alignment: FractionalOffset.centerRight,
             child: DefaultTextStyle.merge(
               style: const TextStyle (fontSize: 18.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Flutter velocity\n${flutterVelocity.round().abs()}'),
-                  Text('Platform velocity\n${platformVelocity.round().abs()}'),
-                ],
+              child: Padding(padding: EdgeInsets.only(right: 16),
+                child: SizedBox(
+                    width: 240,
+                    child: VelocityOverlay(
+                      flutterVelocity: flutterVelocity,
+                      platformVelocity: platformVelocity,
+                    ),
+                ),
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class VelocityOverlay extends StatelessWidget {
+  const VelocityOverlay({
+    super.key,
+    required this.flutterVelocity,
+    required this.platformVelocity,
+  });
+
+  final double flutterVelocity;
+  final double platformVelocity;
+
+  @override
+  Widget build(BuildContext context) {
+    final ratio = platformVelocity == 0
+        ? flutterVelocity == 0
+            ? 1
+            : null
+        : flutterVelocity / platformVelocity;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Text('Velocity:'),
+
+        SizedBox(height: 8),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text('Flutter'), Text(flutterVelocity.round().abs().toString())
+        ]),
+        VelocityBar(value: flutterVelocity, scale: 8000),
+
+        SizedBox(height: 8),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text('Platform'), Text(platformVelocity.round().abs().toString())
+        ]),
+        VelocityBar(value: platformVelocity, scale: 8000),
+
+        SizedBox(height: 8),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text('Difference'), Text((flutterVelocity - platformVelocity).round().abs().toString())
+        ]),
+        VelocityBar(value: flutterVelocity - platformVelocity, scale: 800),
+
+        SizedBox(height: 8),
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          Text('Ratio'), Text(ratio?.toStringAsFixed(2) ?? "∞")
+        ]),
+        VelocityBar(value: ((ratio ?? 1e9) - 1), scale: 1),
+      ],
+    );
+  }
+}
+
+/// A horizontal bar showing a signed value.
+class VelocityBar extends StatelessWidget {
+  const VelocityBar({super.key, required this.value, required this.scale});
+
+  final double value;
+  final double scale;
+
+  @override
+  Widget build(BuildContext context) {
+    final scaled = value / scale;
+    final align = scaled / (2 - scaled.abs());
+    return FractionallySizedBox(
+      widthFactor: scaled.abs() / 2,
+      alignment: AlignmentDirectional(align, 0),
+      child: SizedBox(height: 4, child: ColoredBox(color: Colors.blue)),
     );
   }
 }
