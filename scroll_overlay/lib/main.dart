@@ -48,8 +48,8 @@ class _FlutterDemoState extends State<FlutterDemo> {
   /// Each item will have an extent = this + index.
   static const int baseItemExtent = 40;
 
-  double? flutterVelocity;
-  double? platformVelocity;
+  double flutterVelocity = 0;
+  double platformVelocity = 0;
   final ScrollController controller = ScrollController();
   late Timer velocityTimer;
   double? oldOffset;
@@ -127,8 +127,8 @@ class _FlutterDemoState extends State<FlutterDemo> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Flutter velocity\n${flutterVelocity?.round().abs() ?? ""}'),
-                  Text('Platform velocity\n${platformVelocity?.round().abs() ?? ""}'),
+                  Text('Flutter velocity\n${flutterVelocity.round().abs()}'),
+                  Text('Platform velocity\n${platformVelocity.round().abs()}'),
                 ],
               ),
             ),
