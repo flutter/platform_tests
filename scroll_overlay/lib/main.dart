@@ -36,46 +36,47 @@ class FlutterDemo extends StatefulWidget {
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
-  /// How many times the velocity is measured per second.
-  ///
-  /// This should evenly divide the frame rate, so that most measurement
-  /// intervals span the same number of frames.
-  static const int measurementsPerSecond = 30;
-  static const Duration velocityTimerInverval = Duration(milliseconds: 1000 ~/ measurementsPerSecond);
-
   /// The base item extent at 0 index.
   ///
   /// Each item will have an extent = this + index.
   static const int baseItemExtent = 40;
 
-  final stopwatch = Stopwatch();
   double flutterVelocity = 0;
   double platformVelocity = 0;
   final ScrollController controller = ScrollController();
   late Timer velocityTimer;
   double? oldOffset;
-  int? oldElapsedTicks;
+  Duration? oldTimeStamp;
+
+  void _setStateNextFrame(void Function() fn) {
+    WidgetsBinding.instance.scheduleFrameCallback((_) {
+      setState(fn);
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      stopwatch.start();
-      velocityTimer = Timer.periodic(velocityTimerInverval, (timer) {
-        final elapsedTicks = stopwatch.elapsedTicks;
-        if (oldOffset != null) {
-          final double delta = controller.offset - oldOffset!;
-          final double velocity = delta / (elapsedTicks - oldElapsedTicks!) * stopwatch.frequency;
-          if (velocity != flutterVelocity) {
-            setState(() {
-              flutterVelocity = velocity;
-            });
-          }
+
+    // Compute the velocity after each frame completes.
+    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+      if (oldOffset != null) {
+        final timeDelta = (timeStamp - oldTimeStamp!).inMicroseconds;
+        if (timeDelta == 0)
+          return;
+        final double delta = controller.offset - oldOffset!;
+        final double velocity = delta / timeDelta * 1e6;
+        if (velocity != flutterVelocity) {
+          _setStateNextFrame(() {
+            flutterVelocity = velocity;
+          });
         }
-        oldOffset = controller.offset;
-        oldElapsedTicks = elapsedTicks;
-      });
+      }
+      oldOffset = controller.offset;
+      oldTimeStamp = timeStamp;
     });
+
+    // Record the platform velocity whenever the platform code sends it.
     _platformVelocityEventChannel.receiveBroadcastStream().listen((dynamic velocity) {
       if (velocity != platformVelocity) {
         setState(() {
