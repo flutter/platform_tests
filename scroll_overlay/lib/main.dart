@@ -48,20 +48,24 @@ class _FlutterDemoState extends State<FlutterDemo> {
   /// Each item will have an extent = this + index.
   static const int baseItemExtent = 40;
 
+  final stopwatch = Stopwatch();
   double flutterVelocity = 0;
   double platformVelocity = 0;
   final ScrollController controller = ScrollController();
   late Timer velocityTimer;
   double? oldOffset;
+  int? oldElapsedTicks;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      stopwatch.start();
       velocityTimer = Timer.periodic(velocityTimerInverval, (timer) {
+        final elapsedTicks = stopwatch.elapsedTicks;
         if (oldOffset != null) {
           final double delta = controller.offset - oldOffset!;
-          final double velocity = delta * measurementsPerSecond;
+          final double velocity = delta / (elapsedTicks - oldElapsedTicks!) * stopwatch.frequency;
           if (velocity != flutterVelocity) {
             setState(() {
               flutterVelocity = velocity;
@@ -69,6 +73,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
           }
         }
         oldOffset = controller.offset;
+        oldElapsedTicks = elapsedTicks;
       });
     });
     _platformVelocityEventChannel.receiveBroadcastStream().listen((dynamic velocity) {
