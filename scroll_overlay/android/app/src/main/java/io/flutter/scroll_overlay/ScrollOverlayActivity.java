@@ -204,11 +204,23 @@ public class ScrollOverlayActivity extends Activity {
              */
             static final int baseItemExtent = 40;
 
+            // Our desired height is in logical pixels, aka dp, but we have to set the
+            // height in the layout as an integer in physical pixels.  If we just
+            // multiply and round, the rounding errors compared to Flutter will add up,
+            // and can get us noticeably out of alignment within a screenful.  So we
+            // compute the exact total offsets in dp and apply the lossy unit conversion
+            // directly to those.
+            private int offsetToTop(int position) {
+                // This is the sum baseItemExtent + (baseItemExtent + 1) + (baseItemExtent + 2) + ….
+                int topInDp = position * baseItemExtent + position * (position - 1) / 2;
+                return (int) TypedValue
+                        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, topInDp, getResources().getDisplayMetrics());
+            }
+
             void bind(int position) {
                 int color = OVERLAY_COLORS[position % OVERLAY_COLORS.length];
                 itemView.setBackground(new ColorDrawable(color));
-                final int height = (int) TypedValue
-                        .applyDimension(TypedValue.COMPLEX_UNIT_DIP, baseItemExtent + position, getResources().getDisplayMetrics());
+                final int height = offsetToTop(position + 1) - offsetToTop(position);
                 itemView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height));
                 TextView textView = itemView.findViewById(R.id.text_view);
                 textView.setText("Android " + position);
