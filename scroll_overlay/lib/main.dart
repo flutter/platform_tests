@@ -87,6 +87,18 @@ class _FlutterDemoState extends State<FlutterDemo> {
     super.dispose();
   }
 
+  /// The scroll physics to apply on top of the default.
+  ///
+  /// Edit this to return any custom [ScrollPhysics] you want to use this test
+  /// app to experiment with.
+  ScrollPhysics? get customScrollPhysics => null;
+
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    final parent = ScrollConfiguration.of(context).getScrollPhysics(context);
+    final custom = customScrollPhysics;
+    return custom != null ? custom.applyTo(parent) : parent;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,6 +107,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
           ListView.builder(
             controller: controller,
             itemCount: 1000,
+            physics: getScrollPhysics(context),
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 height: (baseItemExtent + index).toDouble(),
