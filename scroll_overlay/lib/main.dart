@@ -96,7 +96,8 @@ class _FlutterDemoState extends State<FlutterDemo> {
   ScrollPhysics getScrollPhysics(BuildContext context) {
     final parent = ScrollConfiguration.of(context).getScrollPhysics(context);
     final custom = customScrollPhysics;
-    return custom != null ? custom.applyTo(parent) : parent;
+    final physics = custom != null ? custom.applyTo(parent) : parent;
+    return DebugScrollPhysics().applyTo(physics);
   }
 
   @override
@@ -149,5 +150,31 @@ class _FlutterDemoState extends State<FlutterDemo> {
         ],
       ),
     );
+  }
+}
+
+const bool debugPrintCreateBallisticSimulation = true;
+
+/// A [ScrollPhysics] that just forwards to its [parent], plus debug logging.
+///
+/// This prints debug log messages on key method calls that are expected to be
+/// of interest for anyone investigating scrolling behavior.
+class DebugScrollPhysics extends ScrollPhysics {
+  const DebugScrollPhysics({super.parent});
+
+  @override
+  DebugScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return DebugScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+    if (debugPrintCreateBallisticSimulation) {
+      debugPrint(
+          "createBallisticSimulation: velocity ${velocity.toStringAsFixed(1)}" +
+              ", offset ${position.pixels.toStringAsFixed(1)}" +
+              ", range ${position.minScrollExtent.toStringAsFixed(1)}..${position.maxScrollExtent.toStringAsFixed(1)}");
+    }
+    return super.createBallisticSimulation(position, velocity);
   }
 }
