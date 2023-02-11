@@ -22,7 +22,7 @@ void main() {
 }
 
 class FlutterDemo extends StatefulWidget {
-  const FlutterDemo({Key? key}) : super(key: key);
+  const FlutterDemo({super.key});
 
   @override
   _FlutterDemoState createState() => _FlutterDemoState();
