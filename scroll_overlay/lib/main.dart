@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -44,7 +42,6 @@ class _FlutterDemoState extends State<FlutterDemo> {
   double flutterVelocity = 0;
   double platformVelocity = 0;
   final ScrollController controller = ScrollController();
-  late Timer velocityTimer;
   double? oldOffset;
   Duration? oldTimeStamp;
 
@@ -89,7 +86,6 @@ class _FlutterDemoState extends State<FlutterDemo> {
   @override
   void dispose() {
     controller.dispose();
-    velocityTimer.cancel();
     super.dispose();
   }
 
