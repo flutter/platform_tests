@@ -10,11 +10,17 @@ import 'package:flutter/services.dart';
 const EventChannel _platformVelocityEventChannel = EventChannel('scroll_overlay.flutter.io/velocity');
 
 void main() {
-  runApp(DemoApp());
+  runApp(DemoApp(
+    // EDIT HERE if you want to experiment with a custom [ScrollPhysics].
+    physics: null,
+  ));
 }
 
 class DemoApp extends StatelessWidget {
-  const DemoApp({super.key});
+  const DemoApp({super.key, this.physics});
+
+  /// The scroll physics to apply on top of the default.
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +29,16 @@ class DemoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const FlutterDemo(),
+      home: FlutterDemo(physics: physics),
     );
   }
 }
 
 class FlutterDemo extends StatefulWidget {
-  const FlutterDemo({super.key});
+  const FlutterDemo({super.key, this.physics});
+
+  /// The scroll physics to apply on top of the default.
+  final ScrollPhysics? physics;
 
   @override
   _FlutterDemoState createState() => _FlutterDemoState();
@@ -87,15 +96,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
     super.dispose();
   }
 
-  /// The scroll physics to apply on top of the default.
-  ///
-  /// Edit this to return any custom [ScrollPhysics] you want to use this test
-  /// app to experiment with.
-  ScrollPhysics? get customScrollPhysics => null;
-
   ScrollPhysics getScrollPhysics(BuildContext context) {
     final parent = ScrollConfiguration.of(context).getScrollPhysics(context);
-    final custom = customScrollPhysics;
+    final custom = widget.physics;
     final physics = custom != null ? custom.applyTo(parent) : parent;
     return DebugScrollPhysics().applyTo(physics);
   }
