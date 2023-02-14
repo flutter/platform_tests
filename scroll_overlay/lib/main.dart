@@ -60,6 +60,12 @@ class _FlutterDemoState extends State<FlutterDemo> {
       // This initState call could itself be within a persistent frame callback,
       // when driven by flutter_test.  So we defer adding another.
       WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+        if (!controller.hasClients) {
+          // The demo widget is gone; nothing to do.  This can't happen in the
+          // actual app, but can in tests if some tests use the demo widget and
+          // others don't.
+          return;
+        }
         if (oldOffset != null) {
           final timeDelta = (timeStamp - oldTimeStamp!).inMicroseconds;
           if (timeDelta == 0)
