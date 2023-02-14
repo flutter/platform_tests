@@ -3,6 +3,8 @@ import 'package:integration_test/integration_test.dart';
 
 import 'package:scroll_overlay/main.dart' as app;
 
+import '../test/smoke_test.dart';
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -13,11 +15,4 @@ void main() {
     await tester.pumpAndSettle();
     expect(flutterScrollIndex(), greaterThanOrEqualTo(70));
   });
-}
-
-int flutterScrollIndex() {
-  final RegExp pattern = RegExp(r'Flutter (\d+)');
-  final Element item = find.textContaining(pattern).evaluate().first;
-  final String itemText = (item.widget as Text).data!;
-  return int.parse(pattern.matchAsPrefix(itemText)!.group(1)!);
 }
