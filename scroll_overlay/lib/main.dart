@@ -56,21 +56,25 @@ class _FlutterDemoState extends State<FlutterDemo> {
     super.initState();
 
     // Compute the velocity after each frame completes.
-    WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
-      if (oldOffset != null) {
-        final timeDelta = (timeStamp - oldTimeStamp!).inMicroseconds;
-        if (timeDelta == 0)
-          return;
-        final double delta = controller.offset - oldOffset!;
-        final double velocity = delta / timeDelta * 1e6;
-        if (velocity != flutterVelocity) {
-          _setStateNextFrame(() {
-            flutterVelocity = velocity;
-          });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      // This initState call could itself be within a persistent frame callback,
+      // when driven by flutter_test.  So we defer adding another.
+      WidgetsBinding.instance.addPersistentFrameCallback((timeStamp) {
+        if (oldOffset != null) {
+          final timeDelta = (timeStamp - oldTimeStamp!).inMicroseconds;
+          if (timeDelta == 0)
+            return;
+          final double delta = controller.offset - oldOffset!;
+          final double velocity = delta / timeDelta * 1e6;
+          if (velocity != flutterVelocity) {
+            _setStateNextFrame(() {
+              flutterVelocity = velocity;
+            });
+          }
         }
-      }
-      oldOffset = controller.offset;
-      oldTimeStamp = timeStamp;
+        oldOffset = controller.offset;
+        oldTimeStamp = timeStamp;
+      });
     });
 
     // Record the platform velocity whenever the platform code sends it.
