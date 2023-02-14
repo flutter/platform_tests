@@ -170,30 +170,39 @@ class VelocityOverlay extends StatelessWidget {
         Text('Velocity:'),
 
         SizedBox(height: 8),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Flutter'), Text(flutterVelocity.round().abs().toString())
-        ]),
+        NumberRow(label: 'Flutter', value: flutterVelocity),
         VelocityBar(value: flutterVelocity, scale: 8000),
 
         SizedBox(height: 8),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Platform'), Text(platformVelocity.round().abs().toString())
-        ]),
+        NumberRow(label: 'Platform', value: platformVelocity),
         VelocityBar(value: platformVelocity, scale: 8000),
 
         SizedBox(height: 8),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Difference'), Text((flutterVelocity - platformVelocity).round().abs().toString())
-        ]),
+        NumberRow(label: 'Difference', value: flutterVelocity - platformVelocity),
         VelocityBar(value: flutterVelocity - platformVelocity, scale: 800),
 
         SizedBox(height: 8),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Text('Ratio'), Text(ratio?.toStringAsFixed(2) ?? "∞")
+          Expanded(child: Text('Ratio')), Text(ratio?.toStringAsFixed(2) ?? "∞")
         ]),
         VelocityBar(value: ((ratio ?? 1e9) - 1), scale: 1),
       ],
     );
+  }
+}
+
+class NumberRow extends StatelessWidget {
+  const NumberRow({super.key, required this.label, required this.value});
+
+  final String label;
+  final double value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      Expanded(child: Text(label)),
+      Text(value.round().abs().toString())
+    ]);
   }
 }
 
