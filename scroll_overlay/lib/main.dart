@@ -10,15 +10,22 @@ import 'package:flutter/services.dart';
 const EventChannel _platformVelocityEventChannel = EventChannel('scroll_overlay.flutter.io/velocity');
 
 void main() {
-  runApp(
-    MaterialApp(
+  runApp(DemoApp());
+}
+
+class DemoApp extends StatelessWidget {
+  const DemoApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       home: const FlutterDemo(),
-    ),
-  );
+    );
+  }
 }
 
 class FlutterDemo extends StatefulWidget {
