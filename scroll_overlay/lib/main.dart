@@ -8,11 +8,17 @@ import 'package:flutter/services.dart';
 const EventChannel _platformVelocityEventChannel = EventChannel('scroll_overlay.flutter.io/velocity');
 
 void main() {
-  runApp(DemoApp());
+  runApp(DemoApp(
+    // EDIT HERE if you want to experiment with a custom [ScrollPhysics].
+    physics: null,
+  ));
 }
 
 class DemoApp extends StatelessWidget {
-  const DemoApp({super.key});
+  const DemoApp({super.key, this.physics});
+
+  /// The scroll physics to apply on top of the default.
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +27,16 @@ class DemoApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const FlutterDemo(),
+      home: FlutterDemo(physics: physics),
     );
   }
 }
 
 class FlutterDemo extends StatefulWidget {
-  const FlutterDemo({super.key});
+  const FlutterDemo({super.key, this.physics});
+
+  /// The scroll physics to apply on top of the default.
+  final ScrollPhysics? physics;
 
   @override
   _FlutterDemoState createState() => _FlutterDemoState();
@@ -99,6 +108,13 @@ class _FlutterDemoState extends State<FlutterDemo> {
     super.dispose();
   }
 
+  ScrollPhysics getScrollPhysics(BuildContext context) {
+    final parent = ScrollConfiguration.of(context).getScrollPhysics(context);
+    final custom = widget.physics;
+    final physics = custom != null ? custom.applyTo(parent) : parent;
+    return DebugScrollPhysics().applyTo(physics);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,6 +123,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
           ListView.builder(
             controller: controller,
             itemCount: 1000,
+            physics: getScrollPhysics(context),
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 height: (baseItemExtent + index).toDouble(),
@@ -149,6 +166,32 @@ class _FlutterDemoState extends State<FlutterDemo> {
         ],
       ),
     );
+  }
+}
+
+const bool debugPrintCreateBallisticSimulation = true;
+
+/// A [ScrollPhysics] that just forwards to its [parent], plus debug logging.
+///
+/// This prints debug log messages on key method calls that are expected to be
+/// of interest for anyone investigating scrolling behavior.
+class DebugScrollPhysics extends ScrollPhysics {
+  const DebugScrollPhysics({super.parent});
+
+  @override
+  DebugScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return DebugScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+    if (debugPrintCreateBallisticSimulation) {
+      debugPrint(
+          "createBallisticSimulation: velocity ${velocity.toStringAsFixed(1)}" +
+              ", offset ${position.pixels.toStringAsFixed(1)}" +
+              ", range ${position.minScrollExtent.toStringAsFixed(1)}..${position.maxScrollExtent.toStringAsFixed(1)}");
+    }
+    return super.createBallisticSimulation(position, velocity);
   }
 }
 
