@@ -12,6 +12,16 @@ void main() {
     expect(flutterScrollIndex(), greaterThanOrEqualTo(70));
   });
 
+  testWidgets('VelocityOverlay - handles diverse values without error', (WidgetTester tester) async {
+    Future<void> checkWidget(Widget widget) async {
+      await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: widget));
+      await tester.pumpAndSettle();
+    }
+    await checkWidget(VelocityOverlay(flutterVelocity: 0, platformVelocity: 0));
+    await checkWidget(VelocityOverlay(flutterVelocity: 8000, platformVelocity: 0));
+    await checkWidget(VelocityOverlay(flutterVelocity: 0, platformVelocity: 10000));
+  });
+
   testWidgets('FlutterDemo.physics - use flingless physics', (WidgetTester tester) async {
     await tester.pumpWidget(DemoApp(physics: FlinglessScrollPhysics()));
     await tester.pumpAndSettle();
@@ -35,16 +45,6 @@ class FlinglessScrollPhysics extends ScrollPhysics {
   Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
     return null;
   }
-  
-  testWidgets('VelocityOverlay - handles diverse values without error', (WidgetTester tester) async {
-    Future<void> checkWidget(Widget widget) async {
-      await tester.pumpWidget(Directionality(textDirection: TextDirection.ltr, child: widget));
-      await tester.pumpAndSettle();
-    }
-    await checkWidget(VelocityOverlay(flutterVelocity: 0, platformVelocity: 0));
-    await checkWidget(VelocityOverlay(flutterVelocity: 8000, platformVelocity: 0));
-    await checkWidget(VelocityOverlay(flutterVelocity: 0, platformVelocity: 10000));
-  });
 }
 
 int flutterScrollIndex() {
