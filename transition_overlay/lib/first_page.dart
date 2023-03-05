@@ -62,10 +62,10 @@ class _FirstPageState extends State<FirstPage> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: TransitionControllerNavBar(secondPageKey: secondPageKey),
-      child: Center(
+      child: const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Spacer(),
             Text("Flutter"),
             Spacer(flex: 2),

@@ -32,6 +32,7 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
         screenRefreshRate = view.window?.windowScene?.screen.maximumFramesPerSecond ?? 60
         
         pageNC = UINavigationController(rootViewController: firstPageVC)
+        pageNC.interactivePopGestureRecognizer?.delegate = nil
         pageNC.setNavigationBarHidden(true, animated: true)
         
         methodChannel.setMethodCallHandler { [self]
@@ -43,7 +44,7 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
                     
                     startTime = CACurrentMediaTime()
                     hasTransitionStarted = true
-                    eventSink!("transition start")
+                    eventSink?("transition start")
                     
                     setupTransitionReporting(hz: screenRefreshRate)
                 } else if call.method == "pop" {
@@ -51,7 +52,7 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
                     
                     startTime = CACurrentMediaTime()
                     hasTransitionStarted = true
-                    eventSink!("transition start")
+                    eventSink?("transition start")
                     
                     setupTransitionReporting(hz: screenRefreshRate)
                 } else if call.method == "slow-mo enabled" {
@@ -104,7 +105,7 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
         print(events)
         eventSink = events
         
-        eventSink!("maximum refresh rate: \(screenRefreshRate)")
+        eventSink?("maximum refresh rate: \(screenRefreshRate)")
         
         return nil
     }
@@ -132,15 +133,15 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
             let timeDelta = endTime - startTime
             
             if hasTransitionStarted {
-                eventSink!(delta)
+                eventSink?(delta)
             }
             
             if delta == 1.0 && hasTransitionStarted && timeDelta > 0.05 {
-                eventSink!("iOS transition took approx: \(timeDelta)")
+                eventSink?("iOS transition took approx: \(timeDelta)")
                 print("iOS transition took approx: \(timeDelta)")
                 
                 hasTransitionStarted = false
-                eventSink!("transition stop")
+                eventSink?("transition stop")
                 timer?.invalidate()
             }
         }

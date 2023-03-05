@@ -33,15 +33,39 @@ class _TransitionControllerNavBarState
     extends State<TransitionControllerNavBar> {
   @override
   Widget build(BuildContext context) {
-    return CupertinoNavigationBar(
-      leading: CupertinoButton(
-        padding: EdgeInsets.zero,
-        child: widget.isForSecondPage ? const Text("Pop") : const Text("Push"),
-        onPressed: () {
-          if (widget.isForSecondPage) {
-            platformMethodChannel.invokeMethod('pop');
+    return RepaintBoundary(
+      child: CupertinoNavigationBar(
+        backgroundColor: CupertinoColors.systemGrey6,
+        leading: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child:
+              widget.isForSecondPage ? const Text("Pop") : const Text("Push"),
+          onPressed: () {
+            if (widget.isForSecondPage) {
+              platformMethodChannel.invokeMethod('pop');
 
-            Navigator.pop(context);
+              Navigator.pop(context);
+
+              TransitionDataProvider.of(context)!
+                  .transitionConfiguration
+                  .startTransitionReportingFor(
+                    pageKey: widget.secondPageKey!,
+                    context: context,
+                  );
+
+              return;
+            }
+
+            Navigator.push(
+              context,
+              CupertinoPageRoute<void>(
+                builder: (BuildContext context) {
+                  platformMethodChannel.invokeMethod('push');
+
+                  return SecondPage(key: widget.secondPageKey);
+                },
+              ),
+            );
 
             TransitionDataProvider.of(context)!
                 .transitionConfiguration
@@ -49,84 +73,66 @@ class _TransitionControllerNavBarState
                   pageKey: widget.secondPageKey!,
                   context: context,
                 );
+          },
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ValueListenableBuilder(
+              valueListenable:
+                  TimeDilationProvider.of(context)!.timeDilationNotifier,
+              builder: (context, value, child) {
+                return value == 1.0
+                    ? CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: const Text("Speed: 1.0x"),
+                        onPressed: () {
+                          platformMethodChannel.invokeMethod('slow-mo enabled');
 
-            return;
-          }
+                          TimeDilationProvider.of(context)!
+                              .setNewTimeDilation(5.0);
+                        },
+                      )
+                    : CupertinoButton(
+                        padding: EdgeInsets.zero,
+                        child: const Text("Speed: 0.2x"),
+                        onPressed: () {
+                          platformMethodChannel
+                              .invokeMethod('slow-mo disabled');
 
-          platformMethodChannel.invokeMethod('push');
-
-          Navigator.push(
-            context,
-            CupertinoPageRoute<void>(
-              builder: (BuildContext context) =>
-                  SecondPage(key: widget.secondPageKey),
+                          TimeDilationProvider.of(context)!
+                              .setNewTimeDilation(1.0);
+                        },
+                      );
+              },
             ),
-          );
+            const SizedBox(width: 8),
+            CupertinoButton(
+              padding: EdgeInsets.zero,
+              child: AnimatedBuilder(
+                  animation: TransitionDataProvider.of(context)!
+                      .transitionConfiguration,
+                  builder: (context, child) {
+                    return Text(
+                        "Resolution: ${TransitionDataProvider.of(context)!.transitionConfiguration.resolution}x");
+                  }),
+              onPressed: () {
+                final config =
+                    TransitionDataProvider.of(context)!.transitionConfiguration;
 
-          TransitionDataProvider.of(context)!
-              .transitionConfiguration
-              .startTransitionReportingFor(
-                pageKey: widget.secondPageKey!,
-                context: context,
-              );
-        },
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ValueListenableBuilder(
-            valueListenable:
-                TimeDilationProvider.of(context)!.timeDilationNotifier,
-            builder: (context, value, child) {
-              return value == 1.0
-                  ? CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: const Text("Speed: 1.0x"),
-                      onPressed: () {
-                        platformMethodChannel.invokeMethod('slow-mo enabled');
-
-                        TimeDilationProvider.of(context)!
-                            .setNewTimeDilation(5.0);
-                      },
-                    )
-                  : CupertinoButton(
-                      padding: EdgeInsets.zero,
-                      child: const Text("Speed: 0.2x"),
-                      onPressed: () {
-                        platformMethodChannel.invokeMethod('slow-mo disabled');
-
-                        TimeDilationProvider.of(context)!
-                            .setNewTimeDilation(1.0);
-                      },
-                    );
-            },
-          ),
-          const SizedBox(width: 8),
-          CupertinoButton(
-            padding: EdgeInsets.zero,
-            child: AnimatedBuilder(
-                animation:
-                    TransitionDataProvider.of(context)!.transitionConfiguration,
-                builder: (context, child) {
-                  return Text(
-                      "Resolution: ${TransitionDataProvider.of(context)!.transitionConfiguration.resolution}x");
-                }),
-            onPressed: () {
-              final config =
-                  TransitionDataProvider.of(context)!.transitionConfiguration;
-
-              if (config.resolution == 4) {
-                config.setResolution(6);
-              } else if (config.resolution == 6) {
-                config.setResolution(8);
-              } else if (config.resolution == 8) {
-                config.setResolution(10);
-              } else if (config.resolution == 10) {
-                config.setResolution(4);
-              }
-            },
-          ),
-        ],
+                if (config.resolution == 4) {
+                  config.setResolution(6);
+                } else if (config.resolution == 6) {
+                  config.setResolution(8);
+                } else if (config.resolution == 8) {
+                  config.setResolution(10);
+                } else if (config.resolution == 10) {
+                  config.setResolution(4);
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

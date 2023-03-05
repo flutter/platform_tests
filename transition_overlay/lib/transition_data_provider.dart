@@ -64,6 +64,7 @@ class TransitionConfiguration extends ChangeNotifier {
         microseconds: ((1 / screenRefreshRate) * 1000000).truncate() % 1000000);
 
     final screenWidth = MediaQuery.of(context).size.width;
+    final transitionData = TransitionDataProvider.of(context)!.transitionData;
 
     stream = Stream.periodic(frameTime).listen((event) {
       final secondPageRenderObject =
@@ -78,9 +79,7 @@ class TransitionConfiguration extends ChangeNotifier {
         // Checking if delta is 1.0 to avoid sudden jumps in
         // the graph at start or end of a transition
         if (delta != 1.0) {
-          TransitionDataProvider.of(pageKey.currentContext!)!
-              .transitionData
-              .addFlutterData(delta);
+          transitionData.addFlutterData(delta);
         }
       }
     });
