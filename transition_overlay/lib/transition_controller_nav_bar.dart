@@ -49,21 +49,19 @@ class _TransitionControllerNavBarState
                 );
 
             if (widget.isForSecondPage) {
-              platformMethodChannel.invokeMethod('pop');
-
               Navigator.pop(context);
+              platformMethodChannel.invokeMethod('pop');
 
               return;
             } else {
               final route = CupertinoPageRoute<void>(
                 builder: (BuildContext context) {
-                  platformMethodChannel.invokeMethod('push');
-
                   return SecondPage(key: widget.secondPageKey);
                 },
               );
 
               Navigator.of(context).push(route);
+              platformMethodChannel.invokeMethod('push');
 
               // This also tracks pop animation
               route.animation?.addStatusListener((status) {
