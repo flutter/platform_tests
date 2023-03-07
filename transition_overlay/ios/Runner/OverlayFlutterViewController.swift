@@ -44,7 +44,6 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
                     
                     startTime = CACurrentMediaTime()
                     hasTransitionStarted = true
-                    eventSink?("transition start")
                     
                     setupTransitionReporting(hz: screenRefreshRate)
                 } else if call.method == "pop" {
@@ -52,7 +51,6 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
                     
                     startTime = CACurrentMediaTime()
                     hasTransitionStarted = true
-                    eventSink?("transition start")
                     
                     setupTransitionReporting(hz: screenRefreshRate)
                 } else if call.method == "slow-mo enabled" {
@@ -137,11 +135,9 @@ class OverlayFlutterViewController: FlutterViewController, FlutterStreamHandler 
             }
             
             if delta == 1.0 && hasTransitionStarted && timeDelta > 0.05 {
-                eventSink?("iOS transition took approx: \(timeDelta)")
                 print("iOS transition took approx: \(timeDelta)")
                 
                 hasTransitionStarted = false
-                eventSink?("transition stop")
                 timer?.invalidate()
             }
         }

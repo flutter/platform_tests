@@ -41,38 +41,40 @@ class _TransitionControllerNavBarState
           child:
               widget.isForSecondPage ? const Text("Pop") : const Text("Push"),
           onPressed: () {
+            TransitionDataProvider.of(context)!
+                .transitionData
+                .startTransitionReportingFor(
+                  pageKey: widget.secondPageKey!,
+                  context: context,
+                );
+
             if (widget.isForSecondPage) {
               platformMethodChannel.invokeMethod('pop');
 
               Navigator.pop(context);
 
-              TransitionDataProvider.of(context)!
-                  .transitionConfiguration
-                  .startTransitionReportingFor(
-                    pageKey: widget.secondPageKey!,
-                    context: context,
-                  );
-
               return;
-            }
-
-            Navigator.push(
-              context,
-              CupertinoPageRoute<void>(
+            } else {
+              final route = CupertinoPageRoute<void>(
                 builder: (BuildContext context) {
                   platformMethodChannel.invokeMethod('push');
 
                   return SecondPage(key: widget.secondPageKey);
                 },
-              ),
-            );
+              );
 
-            TransitionDataProvider.of(context)!
-                .transitionConfiguration
-                .startTransitionReportingFor(
-                  pageKey: widget.secondPageKey!,
-                  context: context,
-                );
+              Navigator.of(context).push(route);
+
+              // This also tracks pop animation
+              route.animation?.addStatusListener((status) {
+                if (status == AnimationStatus.completed ||
+                    status == AnimationStatus.dismissed) {
+                  TransitionDataProvider.of(context)!
+                      .transitionData
+                      .stopTransitionReporting();
+                }
+              });
+            }
           },
         ),
         trailing: Row(
