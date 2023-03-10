@@ -22,6 +22,7 @@ class TransitionDataProvider extends InheritedWidget {
 class TransitionData extends ChangeNotifier {
   final List<double> flutterData = [];
   final List<double> iosData = [];
+  StreamSubscription<dynamic>? stream;
 
   void addFlutterData(double data) {
     flutterData.add(data);
@@ -35,22 +36,9 @@ class TransitionData extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clear() {
+  void clearData() {
     flutterData.clear();
     iosData.clear();
-
-    notifyListeners();
-  }
-}
-
-class TransitionConfiguration extends ChangeNotifier {
-  double resolution = 6;
-  int screenRefreshRate = 60;
-  Duration frameTime = const Duration(milliseconds: 16, microseconds: 666);
-  StreamSubscription<dynamic>? stream;
-
-  void setResolution(double resolution) {
-    this.resolution = resolution;
 
     notifyListeners();
   }
@@ -59,13 +47,14 @@ class TransitionConfiguration extends ChangeNotifier {
     required GlobalKey pageKey,
     required BuildContext context,
   }) {
-    frameTime = Duration(
-        milliseconds: (1 / screenRefreshRate).floor(),
-        microseconds: ((1 / screenRefreshRate) * 1000000).truncate() % 1000000);
-
+    clearData();
     final screenWidth = MediaQuery.of(context).size.width;
 
-    stream = Stream.periodic(frameTime).listen((event) {
+    stream?.cancel();
+    stream = Stream.periodic(TransitionDataProvider.of(context)!
+            .transitionConfiguration
+            .frameTime)
+        .listen((event) {
       final secondPageRenderObject =
           pageKey.currentContext?.findRenderObject() as RenderBox?;
 
@@ -78,11 +67,33 @@ class TransitionConfiguration extends ChangeNotifier {
         // Checking if delta is 1.0 to avoid sudden jumps in
         // the graph at start or end of a transition
         if (delta != 1.0) {
-          TransitionDataProvider.of(pageKey.currentContext!)!
-              .transitionData
-              .addFlutterData(delta);
+          addFlutterData(delta);
         }
       }
     });
+  }
+
+  void stopTransitionReporting() {
+    stream?.cancel();
+  }
+}
+
+class TransitionConfiguration extends ChangeNotifier {
+  double resolution = 6;
+  int screenRefreshRate = 60;
+  Duration frameTime = const Duration(milliseconds: 16, microseconds: 666);
+
+  void setResolution(double resolution) {
+    this.resolution = resolution;
+
+    notifyListeners();
+  }
+
+  void setScreenRefreshRate(int screenRefreshRate) {
+    this.screenRefreshRate = screenRefreshRate;
+
+    frameTime = Duration(
+        milliseconds: (1 / screenRefreshRate).floor(),
+        microseconds: ((1 / screenRefreshRate) * 1000000).truncate() % 1000000);
   }
 }

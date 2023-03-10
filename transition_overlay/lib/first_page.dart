@@ -28,17 +28,13 @@ class _FirstPageState extends State<FirstPage> {
 
     platformEventChannel.receiveBroadcastStream().listen((dynamic message) {
       if (message is String) {
-        if (message == 'transition start') {
-          transitionDataProviderRef?.transitionData.clear();
-        } else if (message == 'transition stop') {
-          transitionDataProviderRef?.transitionConfiguration.stream?.cancel();
-        } else if (message.contains("maximum refresh rate:")) {
+        if (message.contains("maximum refresh rate:")) {
           final screenRefreshRate = int.parse(message.split(":").last);
 
           if (screenRefreshRate > 60) {
             if (kDebugMode) {
               transitionDataProviderRef?.transitionConfiguration
-                  .screenRefreshRate = screenRefreshRate;
+                  .setScreenRefreshRate(screenRefreshRate);
 
               print(
                   "detected $screenRefreshRate hz refresh rate, enabling enhanced transition reporting");
@@ -53,7 +49,7 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   void dispose() {
-    transitionDataProviderRef?.transitionConfiguration.stream?.cancel();
+    transitionDataProviderRef?.transitionData.stopTransitionReporting();
 
     super.dispose();
   }

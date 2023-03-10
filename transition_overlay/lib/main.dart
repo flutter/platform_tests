@@ -20,9 +20,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return TimeDilationProvider(
       child: TransitionDataProvider(
-        child: Stack(
+        child: const Stack(
           alignment: Alignment.topRight,
-          children: const [
+          children: [
             CupertinoApp(
               title: 'Cupertino App',
               theme: CupertinoThemeData(

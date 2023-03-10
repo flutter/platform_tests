@@ -40,30 +40,32 @@ class _TransitionGraphState extends State<TransitionGraph> {
                 textDirection: TextDirection.ltr,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: AnimatedBuilder(
-                        animation: transitionConfiguration,
-                        builder: (context, child) {
-                          return AnimatedBuilder(
-                            animation: transitionData,
-                            builder: (context, child) {
-                              return CustomPaint(
-                                size: Size(
-                                  transitionData.iosData.length.toDouble() *
-                                      transitionConfiguration.resolution,
-                                  150,
-                                ),
-                                painter: TransitionGraphPainter(
-                                  transitionData.iosData,
-                                  transitionData.flutterData,
-                                  transitionConfiguration.resolution,
-                                  transitionConfiguration.frameTime,
-                                ),
-                              );
-                            },
-                          );
-                        }),
+                  child: RepaintBoundary(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: AnimatedBuilder(
+                          animation: transitionConfiguration,
+                          builder: (context, child) {
+                            return AnimatedBuilder(
+                              animation: transitionData,
+                              builder: (context, child) {
+                                return CustomPaint(
+                                  size: Size(
+                                    transitionData.iosData.length.toDouble() *
+                                        transitionConfiguration.resolution,
+                                    150,
+                                  ),
+                                  painter: TransitionGraphPainter(
+                                    transitionData.iosData,
+                                    transitionData.flutterData,
+                                    transitionConfiguration.resolution,
+                                    transitionConfiguration.frameTime,
+                                  ),
+                                );
+                              },
+                            );
+                          }),
+                    ),
                   ),
                 ),
               ),
@@ -177,7 +179,7 @@ class TransitionGraphPainter extends CustomPainter {
     // iOS data ---------------------------------------------------------------
 
     final iosPaint = Paint()
-      ..color = CupertinoColors.systemBlue.withOpacity(0.9)
+      ..color = CupertinoColors.systemBlue
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
@@ -195,7 +197,7 @@ class TransitionGraphPainter extends CustomPainter {
     // Flutter data -----------------------------------------------------------
 
     final flutterPaint = Paint()
-      ..color = CupertinoColors.systemGreen.withOpacity(0.9)
+      ..color = CupertinoColors.systemGreen
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
@@ -213,6 +215,6 @@ class TransitionGraphPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
+    return oldDelegate != this;
   }
 }
