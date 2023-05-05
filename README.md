@@ -1,6 +1,6 @@
 # Platform testing tools
 
-This repository contains a collection of tools used to measure and test
+This repository contains a collection of tools that are used to measure and test
 Flutter's fidelity around platform specific behaviors.
 
 ## ios_widget_catalog_compare
