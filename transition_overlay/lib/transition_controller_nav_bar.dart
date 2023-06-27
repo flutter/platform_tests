@@ -5,7 +5,7 @@ import 'package:transition_overlay/time_dilation_provider.dart';
 import 'package:transition_overlay/transition_data_provider.dart';
 
 class TransitionControllerNavBar extends StatefulWidget
-    with ObstructingPreferredSizeWidget {
+    implements ObstructingPreferredSizeWidget {
   const TransitionControllerNavBar(
       {super.key, this.secondPageKey, this.isForSecondPage = false});
 
