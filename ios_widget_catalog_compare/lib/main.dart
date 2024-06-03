@@ -300,6 +300,16 @@ class _FlutterDemoState extends State<FlutterDemo> {
           ],
         );
 
+      case 'CupertinoSwitch':
+        return CupertinoSwitch(
+          value: toggleValue,
+          onChanged: (bool? value) {
+            setState(() {
+              toggleValue = value ?? false;
+            });
+          },
+        );
+
       default:
         break;
     }
