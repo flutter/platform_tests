@@ -18,7 +18,7 @@ void main() {
 }
 
 class FlutterDemo extends StatefulWidget {
-  FlutterDemo({Key key}) : super(key: key);
+  FlutterDemo({super.key});
 
   @override
   _FlutterDemoState createState() => _FlutterDemoState();
@@ -26,7 +26,7 @@ class FlutterDemo extends StatefulWidget {
 
 class _FlutterDemoState extends State<FlutterDemo> {
   String controlName = 'Null';
-  TextEditingController textController;
+  late TextEditingController textController;
   bool toggleValue = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -53,7 +53,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
     );
   }
 
-  Widget widgetPicker(BuildContext context) {
+  Widget? widgetPicker(BuildContext context) {
     switch (controlName) {
       case 'CupertinoButton':
         return CupertinoButton(
@@ -108,7 +108,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -118,7 +118,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -133,7 +133,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -143,7 +143,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -167,7 +167,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       vertical: 16.0, horizontal: 16.0),
                   child: CupertinoButton(
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState?.validate() ?? false) {
                         showCupertinoDialog(
                           context: context,
                           builder: (context) => CupertinoAlertDialog(
@@ -204,7 +204,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -214,7 +214,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -229,7 +229,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -239,7 +239,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       prefix: Text('Enter text'),
                       placeholder: "Enter text",
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (value?.isEmpty ?? false) {
                           return 'Please enter a value';
                         }
                         return null;
@@ -263,7 +263,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
                       vertical: 16.0, horizontal: 16.0),
                   child: CupertinoButton(
                     onPressed: () {
-                      if (_formKey.currentState.validate()) {
+                      if (_formKey.currentState?.validate() ?? false) {
                         showCupertinoDialog(
                           context: context,
                           builder: (context) => CupertinoAlertDialog(
