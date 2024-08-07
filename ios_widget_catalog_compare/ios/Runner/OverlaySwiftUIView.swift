@@ -16,6 +16,8 @@ struct OverlaySwiftUIView: View {
 
   @State var toggle = false
 
+  @State var selectedSegmentIndex = 1
+
   // Add your controls here
   var controlDictionary: [String: (String, AnyView)] {
     ["CupertinoButton": // Key
@@ -111,6 +113,17 @@ struct OverlaySwiftUIView: View {
       "CupertinoSwitch":
         ("Cupertino Switch",
           AnyView(Toggle("Switch Label", isOn: $toggle))
+        ),
+      "CupertinoSlidingSegmentedControl":
+        ("Cupertino SegmentedControl",
+          AnyView(
+            Picker("Select an option", selection: $selectedSegmentIndex) {
+              Text("First").tag(0)
+              Text("Second").tag(1)
+              Text("Third").tag(2)
+            }
+            .pickerStyle(.segmented)
+          )
         ),
     ]
   }
