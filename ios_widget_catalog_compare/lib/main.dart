@@ -28,6 +28,7 @@ class _FlutterDemoState extends State<FlutterDemo> {
   String controlName = 'Null';
   late TextEditingController textController;
   bool toggleValue = false;
+  int? selectedIndex = 1;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -310,6 +311,20 @@ class _FlutterDemoState extends State<FlutterDemo> {
           },
         );
 
+      case 'CupertinoSlidingSegmentedControl':
+        return CupertinoSlidingSegmentedControl(
+          groupValue: selectedIndex,
+          children: <int, Widget>{
+            0: Text('First'),
+            1: Text('Second'),
+            2: Text('Third'),
+          },
+          onValueChanged: (int? value) {
+            setState(() {
+              selectedIndex = value;
+            });
+          },
+        );
       default:
         break;
     }
