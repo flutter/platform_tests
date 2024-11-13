@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -308,6 +309,56 @@ class _FlutterDemoState extends State<FlutterDemo> {
               toggleValue = value ?? false;
             });
           },
+        );
+
+      case 'CupertinoAlertDialog':
+        return Center(
+          child: CupertinoButton(
+            onPressed: () => showCupertinoModalPopup<void>(
+              context: context,
+              builder: (BuildContext context) => CupertinoAlertDialog(
+                title: const Text('Alert Title'),
+                content: const Text('This is an alert message'),
+                actions: <CupertinoDialogAction>[
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    child: const Text('Yes'),
+                  ),
+                  CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    child: const Text('No'),
+                  ),
+                ],
+              ),
+            ),
+            child: const Text('CupertinoAlertDialog'),
+          ),
+        );
+
+      case 'CupertinoContextMenu':
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: CupertinoContextMenu(
+            actions: <Widget>[
+              CupertinoContextMenuAction(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Button Context Menu Item"),
+              ),
+            ],
+            child: Container(
+              width: 450,
+              child: Card(
+                child: ListTile(
+                  leading: const Text(
+                    "Button",
+                    style: TextStyle(color: Colors.blue),
+                  ),
+                ),
+              ),
+            ),
+          ),
         );
 
       default:

@@ -16,6 +16,8 @@ struct OverlaySwiftUIView: View {
 
   @State var toggle = false
 
+  @State private var showAlert = false
+
   // Add your controls here
   var controlDictionary: [String: (String, AnyView)] {
     ["CupertinoButton": // Key
@@ -112,12 +114,35 @@ struct OverlaySwiftUIView: View {
         ("Cupertino Switch",
           AnyView(Toggle("Switch Label", isOn: $toggle))
         ),
+      "CupertinoAlertDialog":
+        ("Cupertino Alert Dialog",
+          AnyView(Button("Show Alert") {
+            showAlert = true
+          })
+        ),
+      "CupertinoContextMenu":
+        ("Cupertino Context Menu",
+          AnyView(Button("Button", action: { })
+            .contextMenu {
+              Button("Button Context Menu Item") {
+            }
+          })
+        ),
     ]
   }
 
   var body: some View {
     (controlDictionary[controller.controlKey]?.1 ?? AnyView(Text("Nothing Selected")))
-      .frame(maxWidth: .infinity, maxHeight: .infinity).edgesIgnoringSafeArea(.all)  }
+      .frame(maxWidth: .infinity, maxHeight: .infinity).edgesIgnoringSafeArea(.all)
+      .alert(isPresented: $showAlert) { // Alert definition
+        Alert(
+          title: Text("Alert Title"),
+          message: Text("This is an alert message."),
+          primaryButton: .default(Text("Yes")),
+          secondaryButton: .destructive(Text("No"))
+      )
+    }
+  }
 }
 
 @available(iOS 14.0, *)
