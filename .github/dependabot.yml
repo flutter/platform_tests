@@ -7,15 +7,23 @@ updates:
     directory: "/ios_widget_catalog_compare"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
   - package-ecosystem: "pub"
     directory: "/scroll_overlay"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
   - package-ecosystem: "pub"
     directory: "/tabs_overlay"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
   - package-ecosystem: "pub"
     directory: "/transition_overlay"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
