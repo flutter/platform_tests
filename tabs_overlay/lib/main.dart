@@ -7,10 +7,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  static const List<Tab> myTabs = <Tab>[
-    Tab(text: 'Tab 1'),
-    Tab(text: 'Tab 2'),
-  ];
+  static const List<Tab> myTabs = <Tab>[Tab(text: 'Tab 1'), Tab(text: 'Tab 2')];
 
   @override
   Widget build(BuildContext context) {
