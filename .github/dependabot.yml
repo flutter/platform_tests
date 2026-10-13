@@ -1,5 +1,5 @@
 # See Dependabot documentation for all configuration options:
-# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+# https://docs.github.com/en/code-security/reference/supply-chain-security/dependabot-options-reference
 
 version: 2
 updates:
@@ -7,19 +7,23 @@ updates:
     directory: "/ios_widget_catalog_compare"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
   - package-ecosystem: "pub"
     directory: "/scroll_overlay"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
   - package-ecosystem: "pub"
     directory: "/tabs_overlay"
     schedule:
       interval: "daily"
+    cooldown:
+      default-days: 7
   - package-ecosystem: "pub"
     directory: "/transition_overlay"
     schedule:
       interval: "daily"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
+    cooldown:
+      default-days: 7
