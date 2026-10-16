@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 
 const EventChannel _platformEventChannel =
-    const EventChannel('overlay_ios.flutter.io/responder');
+    EventChannel('overlay_ios.flutter.io/responder');
 
 void main() {
   runApp(
@@ -18,10 +18,10 @@ void main() {
 }
 
 class FlutterDemo extends StatefulWidget {
-  FlutterDemo({super.key});
+  const FlutterDemo({super.key});
 
   @override
-  _FlutterDemoState createState() => _FlutterDemoState();
+  State<FlutterDemo> createState() => _FlutterDemoState();
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
@@ -87,10 +87,10 @@ class _FlutterDemoState extends State<FlutterDemo> {
         return CupertinoSearchTextField(
           controller: textController,
           onChanged: (value) {
-            print("The text has changed to: " + value);
+            debugPrint("The text has changed to: $value");
           },
           onSubmitted: (value) {
-            print("Submitted text: " + value);
+            debugPrint("Submitted text: $value");
           },
         );
 
@@ -153,10 +153,10 @@ class _FlutterDemoState extends State<FlutterDemo> {
                     CupertinoFormRow(
                       prefix: Text('Toggle'),
                       child: CupertinoSwitch(
-                        value: this.toggleValue,
+                        value: toggleValue,
                         onChanged: (value) {
                           setState(() {
-                            this.toggleValue = value;
+                            toggleValue = value;
                           });
                         },
                       ),
@@ -249,10 +249,10 @@ class _FlutterDemoState extends State<FlutterDemo> {
                     CupertinoFormRow(
                       prefix: Text('Toggle'),
                       child: CupertinoSwitch(
-                        value: this.toggleValue,
+                        value: toggleValue,
                         onChanged: (value) {
                           setState(() {
-                            this.toggleValue = value;
+                            toggleValue = value;
                           });
                         },
                       ),
