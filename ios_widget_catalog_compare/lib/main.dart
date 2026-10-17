@@ -5,16 +5,12 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 
-const EventChannel _platformEventChannel =
-    EventChannel('overlay_ios.flutter.io/responder');
+const EventChannel _platformEventChannel = EventChannel(
+  'overlay_ios.flutter.io/responder',
+);
 
 void main() {
-  runApp(
-    CupertinoApp(
-      title: 'Flutter Demo',
-      home: FlutterDemo(),
-    ),
-  );
+  runApp(CupertinoApp(title: 'Flutter Demo', home: FlutterDemo()));
 }
 
 class FlutterDemo extends StatefulWidget {
@@ -59,13 +55,13 @@ class _FlutterDemoState extends State<FlutterDemo> {
       case 'CupertinoButton':
         return CupertinoButton(
           child: Text('Button'),
-          onPressed: () {/** */},
+          onPressed: () {
+            /** */
+          },
         );
 
       case 'CupertinoTextField':
-        return CupertinoTextField(
-          placeholder: "Placeholder",
-        );
+        return CupertinoTextField(placeholder: "Placeholder");
 
       case 'CupertinoPicker':
         return CupertinoPicker(
@@ -165,7 +161,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 16.0),
+                    vertical: 16.0,
+                    horizontal: 16.0,
+                  ),
                   child: CupertinoButton(
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
@@ -175,8 +173,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
                             title: Text('Validated'),
                             actions: [
                               CupertinoDialogAction(
-                                  child: Text('Ok'),
-                                  onPressed: () => Navigator.pop(context)),
+                                child: Text('Ok'),
+                                onPressed: () => Navigator.pop(context),
+                              ),
                             ],
                           ),
                         );
@@ -261,7 +260,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 16.0),
+                    vertical: 16.0,
+                    horizontal: 16.0,
+                  ),
                   child: CupertinoButton(
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
@@ -271,8 +272,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
                             title: Text('Validated'),
                             actions: [
                               CupertinoDialogAction(
-                                  child: Text('Ok'),
-                                  onPressed: () => Navigator.pop(context)),
+                                child: Text('Ok'),
+                                onPressed: () => Navigator.pop(context),
+                              ),
                             ],
                           ),
                         );
