@@ -31,7 +31,7 @@ class _TransitionGraphState extends State<TransitionGraph> {
       child: Padding(
         padding: const EdgeInsets.only(top: 120, right: 20),
         child: ColoredBox(
-          color: CupertinoColors.systemGrey6.withOpacity(0.9),
+          color: CupertinoColors.systemGrey6.withValues(alpha: 0.9),
           child: ClipRect(
             child: SizedBox(
               width: 220 + widthDelta,
