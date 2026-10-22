@@ -8,7 +8,9 @@ import '../test/smoke_test.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('smoke test - app runs, and a fling flings', (WidgetTester tester) async {
+  testWidgets('smoke test - app runs, and a fling flings', (
+    WidgetTester tester,
+  ) async {
     app.main();
     await tester.pumpAndSettle();
     await tester.fling(find.text('Flutter 15'), const Offset(0, -500), 8000);
