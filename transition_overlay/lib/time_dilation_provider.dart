@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/widgets.dart';
 
 class TimeDilationProvider extends InheritedWidget {
   TimeDilationProvider({super.key, required super.child});

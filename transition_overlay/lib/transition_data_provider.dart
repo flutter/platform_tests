@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 class TransitionDataProvider extends InheritedWidget {
   TransitionDataProvider({super.key, required super.child});
