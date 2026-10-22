@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:transition_overlay/first_page.dart';
 import 'package:transition_overlay/time_dilation_provider.dart';

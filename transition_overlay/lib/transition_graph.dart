@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:transition_overlay/transition_data_provider.dart';
 
 class TransitionGraph extends StatefulWidget {
