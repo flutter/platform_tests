@@ -39,7 +39,7 @@ class FlutterDemo extends StatefulWidget {
   final ScrollPhysics? physics;
 
   @override
-  _FlutterDemoState createState() => _FlutterDemoState();
+  State<FlutterDemo> createState() => _FlutterDemoState();
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
@@ -77,8 +77,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
         }
         if (oldOffset != null) {
           final timeDelta = (timeStamp - oldTimeStamp!).inMicroseconds;
-          if (timeDelta == 0)
+          if (timeDelta == 0) {
             return;
+          }
           final double delta = controller.offset - oldOffset!;
           final double velocity = delta / timeDelta * 1e6;
           if (velocity != flutterVelocity) {
@@ -187,9 +188,7 @@ class DebugScrollPhysics extends ScrollPhysics {
   Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
     if (debugPrintCreateBallisticSimulation) {
       debugPrint(
-          "createBallisticSimulation: velocity ${velocity.toStringAsFixed(1)}" +
-              ", offset ${position.pixels.toStringAsFixed(1)}" +
-              ", range ${position.minScrollExtent.toStringAsFixed(1)}..${position.maxScrollExtent.toStringAsFixed(1)}");
+          "createBallisticSimulation: velocity ${velocity.toStringAsFixed(1)}" ", offset ${position.pixels.toStringAsFixed(1)}" ", range ${position.minScrollExtent.toStringAsFixed(1)}..${position.maxScrollExtent.toStringAsFixed(1)}");
     }
     return super.createBallisticSimulation(position, velocity);
   }
