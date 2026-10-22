@@ -5,11 +5,13 @@ import 'package:transition_overlay/time_dilation_provider.dart';
 import 'package:transition_overlay/transition_data_provider.dart';
 import 'package:transition_overlay/transition_graph.dart';
 
-const EventChannel platformEventChannel =
-    EventChannel('overlay_ios.flutter.io/responder');
+const EventChannel platformEventChannel = EventChannel(
+  'overlay_ios.flutter.io/responder',
+);
 
-const MethodChannel platformMethodChannel =
-    MethodChannel('overlay_ios.flutter.io/sender');
+const MethodChannel platformMethodChannel = MethodChannel(
+  'overlay_ios.flutter.io/sender',
+);
 
 void main() => runApp(const App());
 
@@ -25,9 +27,7 @@ class App extends StatelessWidget {
           children: [
             CupertinoApp(
               title: 'Cupertino App',
-              theme: CupertinoThemeData(
-                brightness: Brightness.light,
-              ),
+              theme: CupertinoThemeData(brightness: Brightness.light),
               home: FirstPage(),
             ),
             TransitionGraph(),

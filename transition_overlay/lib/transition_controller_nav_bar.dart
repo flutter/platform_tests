@@ -6,8 +6,11 @@ import 'package:transition_overlay/transition_data_provider.dart';
 
 class TransitionControllerNavBar extends StatefulWidget
     implements ObstructingPreferredSizeWidget {
-  const TransitionControllerNavBar(
-      {super.key, this.secondPageKey, this.isForSecondPage = false});
+  const TransitionControllerNavBar({
+    super.key,
+    this.secondPageKey,
+    this.isForSecondPage = false,
+  });
 
   final GlobalKey? secondPageKey;
   final bool isForSecondPage;
@@ -38,11 +41,11 @@ class _TransitionControllerNavBarState
         backgroundColor: CupertinoColors.systemGrey6,
         leading: CupertinoButton(
           padding: EdgeInsets.zero,
-          child:
-              widget.isForSecondPage ? const Text("Pop") : const Text("Push"),
+          child: widget.isForSecondPage
+              ? const Text("Pop")
+              : const Text("Push"),
           onPressed: () {
-            TransitionDataProvider.of(context)!
-                .transitionData
+            TransitionDataProvider.of(context)!.transitionData
                 .startTransitionReportingFor(
                   pageKey: widget.secondPageKey!,
                   context: context,
@@ -67,8 +70,7 @@ class _TransitionControllerNavBarState
               route.animation?.addStatusListener((status) {
                 if (status == AnimationStatus.completed ||
                     status == AnimationStatus.dismissed) {
-                  TransitionDataProvider.of(context)!
-                      .transitionData
+                  TransitionDataProvider.of(context)!.transitionData
                       .stopTransitionReporting();
                 }
               });
@@ -79,8 +81,8 @@ class _TransitionControllerNavBarState
           mainAxisSize: MainAxisSize.min,
           children: [
             ValueListenableBuilder(
-              valueListenable:
-                  TimeDilationProvider.of(context)!.timeDilationNotifier,
+              valueListenable: TimeDilationProvider.of(context)!
+                  .timeDilationNotifier,
               builder: (context, value, child) {
                 return value == 1.0
                     ? CupertinoButton(
@@ -97,8 +99,9 @@ class _TransitionControllerNavBarState
                         padding: EdgeInsets.zero,
                         child: const Text("Speed: 0.2x"),
                         onPressed: () {
-                          platformMethodChannel
-                              .invokeMethod('slow-mo disabled');
+                          platformMethodChannel.invokeMethod(
+                            'slow-mo disabled',
+                          );
 
                           TimeDilationProvider.of(context)!
                               .setNewTimeDilation(1.0);
@@ -110,15 +113,17 @@ class _TransitionControllerNavBarState
             CupertinoButton(
               padding: EdgeInsets.zero,
               child: AnimatedBuilder(
-                  animation: TransitionDataProvider.of(context)!
-                      .transitionConfiguration,
-                  builder: (context, child) {
-                    return Text(
-                        "Resolution: ${TransitionDataProvider.of(context)!.transitionConfiguration.resolution}x");
-                  }),
+                animation: TransitionDataProvider.of(context)!
+                    .transitionConfiguration,
+                builder: (context, child) {
+                  return Text(
+                    "Resolution: ${TransitionDataProvider.of(context)!.transitionConfiguration.resolution}x",
+                  );
+                },
+              ),
               onPressed: () {
-                final config =
-                    TransitionDataProvider.of(context)!.transitionConfiguration;
+                final config = TransitionDataProvider.of(context)!
+                    .transitionConfiguration;
 
                 if (config.resolution == 4) {
                   config.setResolution(6);

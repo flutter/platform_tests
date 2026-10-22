@@ -18,8 +18,8 @@ class _TransitionGraphState extends State<TransitionGraph> {
   @override
   Widget build(BuildContext context) {
     final transitionData = TransitionDataProvider.of(context)!.transitionData;
-    final transitionConfiguration =
-        TransitionDataProvider.of(context)!.transitionConfiguration;
+    final transitionConfiguration = TransitionDataProvider.of(context)!
+        .transitionConfiguration;
 
     return GestureDetector(
       onPanUpdate: (details) {
@@ -44,27 +44,28 @@ class _TransitionGraphState extends State<TransitionGraph> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: AnimatedBuilder(
-                          animation: transitionConfiguration,
-                          builder: (context, child) {
-                            return AnimatedBuilder(
-                              animation: transitionData,
-                              builder: (context, child) {
-                                return CustomPaint(
-                                  size: Size(
-                                    transitionData.iosData.length.toDouble() *
-                                        transitionConfiguration.resolution,
-                                    150,
-                                  ),
-                                  painter: TransitionGraphPainter(
-                                    transitionData.iosData,
-                                    transitionData.flutterData,
-                                    transitionConfiguration.resolution,
-                                    transitionConfiguration.frameTime,
-                                  ),
-                                );
-                              },
-                            );
-                          }),
+                        animation: transitionConfiguration,
+                        builder: (context, child) {
+                          return AnimatedBuilder(
+                            animation: transitionData,
+                            builder: (context, child) {
+                              return CustomPaint(
+                                size: Size(
+                                  transitionData.iosData.length.toDouble() *
+                                      transitionConfiguration.resolution,
+                                  150,
+                                ),
+                                painter: TransitionGraphPainter(
+                                  transitionData.iosData,
+                                  transitionData.flutterData,
+                                  transitionConfiguration.resolution,
+                                  transitionConfiguration.frameTime,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -92,8 +93,10 @@ class TransitionGraphPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final longestDataLength =
-        max(iosTransitionData.length, flutterTransitionData.length);
+    final longestDataLength = max(
+      iosTransitionData.length,
+      flutterTransitionData.length,
+    );
 
     final xPaint = Paint()
       ..color = CupertinoColors.black
@@ -102,10 +105,7 @@ class TransitionGraphPainter extends CustomPainter {
 
     canvas.drawLine(
       Offset(0, size.height),
-      Offset(
-        longestDataLength * resolution,
-        size.height,
-      ),
+      Offset(longestDataLength * resolution, size.height),
       xPaint,
     );
 
@@ -113,10 +113,7 @@ class TransitionGraphPainter extends CustomPainter {
       final totalFramesTextPainter = TextPainter(
         text: TextSpan(
           text: "${(frameTime * longestDataLength).inMilliseconds} ms",
-          style: const TextStyle(
-            color: CupertinoColors.black,
-            fontSize: 8,
-          ),
+          style: const TextStyle(color: CupertinoColors.black, fontSize: 8),
         ),
         textDirection: TextDirection.ltr,
       );
@@ -136,45 +133,29 @@ class TransitionGraphPainter extends CustomPainter {
       ..strokeWidth = 1
       ..strokeCap = StrokeCap.round;
 
-    canvas.drawLine(
-      const Offset(0, 0),
-      Offset(0, size.height),
-      yPaint,
-    );
+    canvas.drawLine(const Offset(0, 0), Offset(0, size.height), yPaint);
 
     final textPainter = TextPainter(
       text: const TextSpan(
         text: "1.0",
-        style: TextStyle(
-          color: CupertinoColors.black,
-          fontSize: 8,
-        ),
+        style: TextStyle(color: CupertinoColors.black, fontSize: 8),
       ),
       textDirection: TextDirection.ltr,
     );
 
     textPainter.layout();
-    textPainter.paint(
-      canvas,
-      const Offset(2, -8),
-    );
+    textPainter.paint(canvas, const Offset(2, -8));
 
     final textPainter2 = TextPainter(
       text: const TextSpan(
         text: "0.0",
-        style: TextStyle(
-          color: CupertinoColors.black,
-          fontSize: 8,
-        ),
+        style: TextStyle(color: CupertinoColors.black, fontSize: 8),
       ),
       textDirection: TextDirection.ltr,
     );
 
     textPainter2.layout();
-    textPainter2.paint(
-      canvas,
-      Offset(0, size.height),
-    );
+    textPainter2.paint(canvas, Offset(0, size.height));
 
     // iOS data ---------------------------------------------------------------
 
