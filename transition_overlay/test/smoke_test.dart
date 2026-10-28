@@ -1,11 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:transition_overlay/main.dart';
 import 'package:transition_overlay/transition_graph.dart';
 
 void main() {
-  testWidgets("smoke test - button pushes new page and pops back",
-      (WidgetTester tester) async {
+  testWidgets("smoke test - button pushes new page and pops back", (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const App());
 
     expect(find.text("Push"), findsOneWidget);
@@ -22,8 +23,9 @@ void main() {
     expect(find.text("Pop"), findsNothing);
   });
 
-  testWidgets("transition data is being passed to graph painter",
-      (widgetTester) async {
+  testWidgets("transition data is being passed to graph painter", (
+    widgetTester,
+  ) async {
     await widgetTester.pumpWidget(const App());
 
     await widgetTester.tap(find.text("Push"));

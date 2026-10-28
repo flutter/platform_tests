@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 class TransitionDataProvider extends InheritedWidget {
   TransitionDataProvider({super.key, required super.child});
@@ -51,26 +51,27 @@ class TransitionData extends ChangeNotifier {
     final screenWidth = MediaQuery.of(context).size.width;
 
     stream?.cancel();
-    stream = Stream.periodic(TransitionDataProvider.of(context)!
-            .transitionConfiguration
-            .frameTime)
-        .listen((event) {
-      final secondPageRenderObject =
-          pageKey.currentContext?.findRenderObject() as RenderBox?;
+    stream =
+        Stream.periodic(
+          TransitionDataProvider.of(context)!.transitionConfiguration.frameTime,
+        ).listen((event) {
+          final secondPageRenderObject =
+              pageKey.currentContext?.findRenderObject() as RenderBox?;
 
-      final secondPagePosition =
-          secondPageRenderObject?.localToGlobal(Offset.zero);
+          final secondPagePosition = secondPageRenderObject?.localToGlobal(
+            Offset.zero,
+          );
 
-      if (secondPagePosition != null) {
-        final delta = (screenWidth - secondPagePosition.dx) / screenWidth;
+          if (secondPagePosition != null) {
+            final delta = (screenWidth - secondPagePosition.dx) / screenWidth;
 
-        // Checking if delta is 1.0 to avoid sudden jumps in
-        // the graph at start or end of a transition
-        if (delta != 1.0) {
-          addFlutterData(delta);
-        }
-      }
-    });
+            // Checking if delta is 1.0 to avoid sudden jumps in
+            // the graph at start or end of a transition
+            if (delta != 1.0) {
+              addFlutterData(delta);
+            }
+          }
+        });
   }
 
   void stopTransitionReporting() {
@@ -93,7 +94,8 @@ class TransitionConfiguration extends ChangeNotifier {
     this.screenRefreshRate = screenRefreshRate;
 
     frameTime = Duration(
-        milliseconds: (1 / screenRefreshRate).floor(),
-        microseconds: ((1 / screenRefreshRate) * 1000000).truncate() % 1000000);
+      milliseconds: (1 / screenRefreshRate).floor(),
+      microseconds: ((1 / screenRefreshRate) * 1000000).truncate() % 1000000,
+    );
   }
 }

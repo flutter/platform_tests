@@ -37,7 +37,8 @@ class _FirstPageState extends State<FirstPage> {
                   .setScreenRefreshRate(screenRefreshRate);
 
               print(
-                  "detected $screenRefreshRate hz refresh rate, enabling enhanced transition reporting");
+                "detected $screenRefreshRate hz refresh rate, enabling enhanced transition reporting",
+              );
             }
           }
         }
@@ -61,11 +62,7 @@ class _FirstPageState extends State<FirstPage> {
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Spacer(),
-            Text("Flutter"),
-            Spacer(flex: 2),
-          ],
+          children: const [Spacer(), Text("Flutter"), Spacer(flex: 2)],
         ),
       ),
     );
