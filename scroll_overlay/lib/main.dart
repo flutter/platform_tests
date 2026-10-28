@@ -5,13 +5,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-const EventChannel _platformVelocityEventChannel = EventChannel('scroll_overlay.flutter.io/velocity');
+const EventChannel _platformVelocityEventChannel = EventChannel(
+  'scroll_overlay.flutter.io/velocity',
+);
 
 void main() {
-  runApp(DemoApp(
-    // EDIT HERE if you want to experiment with a custom [ScrollPhysics].
-    physics: null,
-  ));
+  runApp(
+    DemoApp(
+      // EDIT HERE if you want to experiment with a custom [ScrollPhysics].
+      physics: null,
+    ),
+  );
 }
 
 class DemoApp extends StatelessWidget {
@@ -24,9 +28,7 @@ class DemoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: FlutterDemo(physics: physics),
     );
   }
@@ -39,7 +41,7 @@ class FlutterDemo extends StatefulWidget {
   final ScrollPhysics? physics;
 
   @override
-  _FlutterDemoState createState() => _FlutterDemoState();
+  State<FlutterDemo> createState() => _FlutterDemoState();
 }
 
 class _FlutterDemoState extends State<FlutterDemo> {
@@ -77,8 +79,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
         }
         if (oldOffset != null) {
           final timeDelta = (timeStamp - oldTimeStamp!).inMicroseconds;
-          if (timeDelta == 0)
+          if (timeDelta == 0) {
             return;
+          }
           final double delta = controller.offset - oldOffset!;
           final double velocity = delta / timeDelta * 1e6;
           if (velocity != flutterVelocity) {
@@ -93,7 +96,9 @@ class _FlutterDemoState extends State<FlutterDemo> {
     });
 
     // Record the platform velocity whenever the platform code sends it.
-    _platformVelocityEventChannel.receiveBroadcastStream().listen((dynamic velocity) {
+    _platformVelocityEventChannel.receiveBroadcastStream().listen((
+      dynamic velocity,
+    ) {
       if (velocity != platformVelocity) {
         setState(() {
           platformVelocity = velocity / MediaQuery.of(context).devicePixelRatio;
@@ -151,14 +156,15 @@ class _FlutterDemoState extends State<FlutterDemo> {
           Align(
             alignment: FractionalOffset.centerRight,
             child: DefaultTextStyle.merge(
-              style: const TextStyle (fontSize: 18.0),
-              child: Padding(padding: EdgeInsets.only(right: 16),
+              style: const TextStyle(fontSize: 18.0),
+              child: Padding(
+                padding: EdgeInsets.only(right: 16),
                 child: SizedBox(
-                    width: 240,
-                    child: VelocityOverlay(
-                      flutterVelocity: flutterVelocity,
-                      platformVelocity: platformVelocity,
-                    ),
+                  width: 240,
+                  child: VelocityOverlay(
+                    flutterVelocity: flutterVelocity,
+                    platformVelocity: platformVelocity,
+                  ),
                 ),
               ),
             ),
@@ -184,12 +190,16 @@ class DebugScrollPhysics extends ScrollPhysics {
   }
 
   @override
-  Simulation? createBallisticSimulation(ScrollMetrics position, double velocity) {
+  Simulation? createBallisticSimulation(
+    ScrollMetrics position,
+    double velocity,
+  ) {
     if (debugPrintCreateBallisticSimulation) {
       debugPrint(
-          "createBallisticSimulation: velocity ${velocity.toStringAsFixed(1)}" +
-              ", offset ${position.pixels.toStringAsFixed(1)}" +
-              ", range ${position.minScrollExtent.toStringAsFixed(1)}..${position.maxScrollExtent.toStringAsFixed(1)}");
+        "createBallisticSimulation: velocity ${velocity.toStringAsFixed(1)}"
+        ", offset ${position.pixels.toStringAsFixed(1)}"
+        ", range ${position.minScrollExtent.toStringAsFixed(1)}..${position.maxScrollExtent.toStringAsFixed(1)}",
+      );
     }
     return super.createBallisticSimulation(position, velocity);
   }
@@ -209,8 +219,8 @@ class VelocityOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final ratio = platformVelocity == 0
         ? flutterVelocity == 0
-            ? 1
-            : null
+              ? 1
+              : null
         : flutterVelocity / platformVelocity;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -227,13 +237,20 @@ class VelocityOverlay extends StatelessWidget {
         VelocityBar(value: platformVelocity, scale: 8000),
 
         SizedBox(height: 8),
-        NumberRow(label: 'Difference', value: flutterVelocity - platformVelocity),
+        NumberRow(
+          label: 'Difference',
+          value: flutterVelocity - platformVelocity,
+        ),
         VelocityBar(value: flutterVelocity - platformVelocity, scale: 800),
 
         SizedBox(height: 8),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          Expanded(child: Text('Ratio')), Text(ratio?.toStringAsFixed(2) ?? "∞")
-        ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(child: Text('Ratio')),
+            Text(ratio?.toStringAsFixed(2) ?? "∞"),
+          ],
+        ),
         VelocityBar(value: ((ratio ?? 1e9) - 1), scale: 1),
       ],
     );
@@ -248,10 +265,13 @@ class NumberRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      Expanded(child: Text(label)),
-      Text(value.round().abs().toString())
-    ]);
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(child: Text(label)),
+        Text(value.round().abs().toString()),
+      ],
+    );
   }
 }
 
