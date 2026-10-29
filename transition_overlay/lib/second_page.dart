@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:transition_overlay/transition_controller_nav_bar.dart';
 
 class SecondPage extends StatelessWidget {
